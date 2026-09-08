@@ -107,6 +107,43 @@ function LocationIcon() {
   );
 }
 
+function CalendarIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="h-7 w-7"
+    >
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M16 3v4M8 3v4M3 10h18" />
+      <path d="m9 15 2 2 4-4" />
+    </svg>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="h-7 w-7"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+
 function MargaritaConTallo({ className = "" }) {
   return (
     <motion.svg
@@ -500,18 +537,7 @@ export default function EventoDireccion() {
             sm:mb-14
           "
         >
-          <p
-            className="
-              text-[9px]
-              font-bold
-              uppercase
-              tracking-[0.38em]
-              sm:text-[11px]
-            "
-            style={{ color: colores.naranja }}
-          >
-            Dónde será
-          </p>
+
 
           <h2
             className="
@@ -601,6 +627,51 @@ export default function EventoDireccion() {
             🌸
           </span>
 
+          {/* PRIMER AÑITO */}
+
+          <motion.div
+            variants={fadeUp}
+            className="relative mx-auto mb-8 flex w-fit flex-col items-center"
+          >
+            <span
+              aria-hidden="true"
+              className="absolute -left-9 top-10 text-3xl sm:-left-12 sm:text-4xl"
+            >
+              🌸
+            </span>
+
+            <span
+              aria-hidden="true"
+              className="absolute -right-9 top-2 text-3xl sm:-right-12 sm:text-4xl"
+            >
+              🌼
+            </span>
+
+            <span
+              className="
+                font-serif text-[105px] font-bold
+                leading-[0.8] sm:text-[135px]
+              "
+              style={{
+                color: colores.rosa,
+                WebkitTextStroke: "2px #FFFFFF",
+                textShadow: "4px 5px 0 #F5C44D",
+              }}
+            >
+              1
+            </span>
+
+            <p
+              className="
+                mt-3 font-cursiveDancing
+                text-4xl sm:text-5xl
+              "
+              style={{ color: colores.rosaFuerte }}
+            >
+              Añito
+            </p>
+          </motion.div>
+
           <motion.div
             variants={fadeUp}
             className="
@@ -671,45 +742,134 @@ export default function EventoDireccion() {
               sm:gap-5
             "
           >
-            <DatoPendiente titulo="Dirección" />
-            <DatoPendiente titulo="Ubicación en Maps" />
+            <div
+              className="
+                flex min-h-[130px] flex-col items-center
+                justify-center rounded-[30px] border-2
+                border-dashed px-4 py-5
+              "
+              style={{
+                color: colores.rosaFuerte,
+                borderColor: colores.rosaClaro,
+                backgroundColor: colores.rosaMuyClaro,
+              }}
+            >
+              <CalendarIcon />
+
+              <p
+                className="
+                  mt-3 text-[9px] font-bold uppercase
+                  tracking-[0.28em]
+                "
+                style={{ color: colores.naranja }}
+              >
+                Fecha
+              </p>
+
+              <p
+                className="mt-2 font-serif text-lg font-semibold sm:text-xl"
+                style={{ color: colores.texto }}
+              >
+                Sábado 10 de octubre
+              </p>
+            </div>
+
+            <div
+              className="
+                flex min-h-[130px] flex-col items-center
+                justify-center rounded-[30px] border-2
+                border-dashed px-4 py-5
+              "
+              style={{
+                color: colores.rosaFuerte,
+                borderColor: colores.rosaClaro,
+                backgroundColor: colores.rosaMuyClaro,
+              }}
+            >
+              <ClockIcon />
+
+              <p
+                className="
+                  mt-3 text-[9px] font-bold uppercase
+                  tracking-[0.28em]
+                "
+                style={{ color: colores.naranja }}
+              >
+                Hora
+              </p>
+
+              <p
+                className="mt-2 font-serif text-2xl font-semibold"
+                style={{ color: colores.texto }}
+              >
+                3:00 p. m.
+              </p>
+            </div>
           </motion.div>
 
           <motion.div
             variants={fadeUp}
             className="
-              relative
-              mt-6
-              inline-flex
-              min-h-[48px]
-              items-center
-              justify-center
-              gap-3
-              rounded-full
-              border
-              px-7
-              py-3
+              relative mx-auto mt-6 flex w-full max-w-lg
+              items-center justify-center gap-3
+              rounded-[26px] border-2 border-dashed
+              px-5 py-4
             "
             style={{
-              color: colores.textoSuave,
-              backgroundColor: colores.rosaMuyClaro,
-              borderColor: colores.rosaClaro,
+              color: colores.rosaFuerte,
+              backgroundColor: colores.amarilloClaro,
+              borderColor: colores.amarillo,
             }}
+          >
+            <span aria-hidden="true" className="text-2xl">
+              🌼
+            </span>
+
+            <span
+              className="
+                font-cursiveDancing text-2xl
+                font-semibold sm:text-3xl
+              "
+            >
+              ¡Trae tu traje de baño!
+            </span>
+
+            <span aria-hidden="true" className="text-2xl">
+              💦
+            </span>
+          </motion.div>
+
+          <motion.a
+            variants={fadeUp}
+            href="https://maps.app.goo.gl/WDbdTLn1AKjzeYMd9"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Abrir la ubicación del Salón de eventos Are’s en Google Maps"
+            className="
+              relative mt-7 inline-flex min-h-[54px]
+              items-center justify-center gap-3 rounded-full
+              border-2 px-8 py-4 text-white
+              sm:min-w-[270px]
+            "
+            style={{
+              backgroundColor: colores.rosaFuerte,
+              borderColor: colores.rosaFuerte,
+              boxShadow: "0 12px 28px rgba(217,79,130,0.22)",
+            }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.985 }}
           >
             <LocationIcon />
 
             <span
               className="
-                text-[9px]
-                font-bold
-                uppercase
-                tracking-[0.24em]
-                sm:text-[10px]
+                text-[10px] font-bold uppercase
+                tracking-[0.25em]
               "
             >
-              Enlace disponible próximamente
+              Ver ubicación
             </span>
-          </motion.div>
+          </motion.a>
         </motion.div>
 
         <motion.p

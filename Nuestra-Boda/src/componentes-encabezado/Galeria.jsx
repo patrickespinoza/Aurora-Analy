@@ -310,15 +310,7 @@ export default function Galeria() {
           viewport={{ once: true }}
           transition={{ duration: 0.9 }}
         >
-          <p
-            className="
-              text-[9px] font-bold uppercase tracking-[0.38em]
-              sm:text-[11px]
-            "
-            style={{ color: colores.rosaFuerte }}
-          >
-            Sus momentos más bonitos
-          </p>
+
 
           <h2
             className="
@@ -514,15 +506,7 @@ export default function Galeria() {
                 </motion.button>
               </div>
 
-              <p
-                className="
-                  mt-5 text-[9px] font-semibold
-                  uppercase tracking-[0.27em]
-                "
-                style={{ color: colores.textoSuave }}
-              >
-                La galería avanza automáticamente
-              </p>
+
             </div>
           </div>
         </motion.div>
@@ -531,7 +515,7 @@ export default function Galeria() {
           className="
             mx-auto mt-10 max-w-xl text-center
             font-cursiveDancing text-3xl
-            leading-relaxed sm:mt-14 sm:text-4xl
+            leading-relaxed sm:mt-14 sm:text-4xl px-4
           "
           style={{ color: colores.rosaFuerte }}
           initial={{ opacity: 0, y: 12 }}

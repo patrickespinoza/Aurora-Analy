@@ -128,7 +128,7 @@ export default function Portada() {
       style={{ backgroundColor: colores.crema, color: colores.texto }}
     >
       <audio ref={audioRef} loop preload="none">
-        <source src="/TylerShaw.mp3" type="audio/mpeg" />
+        <source src="/musica.mp3" type="audio/mpeg" />
       </audio>
 
       <AnimatePresence mode="wait">
@@ -198,12 +198,6 @@ export default function Portada() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ ...transicion, delay: 0.1 }}
               >
-                <p
-                  className="text-[10px] font-bold uppercase tracking-[0.35em]"
-                  style={{ color: colores.naranja }}
-                >
-                  Una invitación muy especial
-                </p>
 
                 <span className="mt-3 text-2xl sm:mt-5">🌼</span>
 

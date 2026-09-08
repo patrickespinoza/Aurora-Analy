@@ -297,16 +297,6 @@ export default function Regalos() {
           <GiftIcon />
         </motion.div>
 
-        <motion.p
-          variants={fadeUp}
-          className="
-            mt-6 text-[9px] font-bold uppercase
-            tracking-[0.38em] sm:text-[11px]
-          "
-          style={{ color: colores.naranja }}
-        >
-          Un detalle para Aurora
-        </motion.p>
 
         <motion.h2
           variants={fadeUp}
@@ -361,7 +351,7 @@ export default function Regalos() {
           variants={fadeUp}
           className="
             mt-10 font-cursiveDancing
-            text-3xl sm:mt-14 sm:text-4xl
+            text-3xl sm:mt-14 sm:text-4xl px-4
           "
           style={{ color: colores.rosaFuerte }}
         >
