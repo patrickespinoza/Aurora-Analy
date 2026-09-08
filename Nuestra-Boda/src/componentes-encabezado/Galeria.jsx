@@ -16,6 +16,7 @@ const colores = {
 };
 
 const images = [
+  "/Carrusel04.jpg",
   "/Carrusel01v.jpeg",
   "/Carrusel02.jpeg",
   "/Carrusel03.jpeg",

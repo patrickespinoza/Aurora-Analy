@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ImagenFinal({ imagen = "/final.jpeg" }) {
+export default function ImagenFinal({ imagen = "/final.jpg" }) {
   return (
     <section
       className="relative min-h-[100dvh] w-full overflow-hidden bg-[#FFF1F6]"
