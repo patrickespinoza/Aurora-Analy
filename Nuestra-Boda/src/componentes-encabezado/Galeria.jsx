@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const colores = {
   rosa: "#F277A2",
@@ -16,11 +16,11 @@ const colores = {
 };
 
 const images = [
-  "/carrusel01.jpeg",
-  "/carusel02.jpeg",
-  "/carusel03.jpeg",
-  "/carusel04.jpeg",
-  "/carusel05.jpeg",
+  "/Carrusel01v.jpeg",
+  "/Carrusel02.jpeg",
+  "/Carrusel03.jpeg",
+  "/Carrusel05.jpeg",
+  
 ];
 
 const fadeUp = {
@@ -207,43 +207,57 @@ function NextIcon() {
 
 export default function Galeria() {
   const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
+  const [imagesReady, setImagesReady] = useState(false);
 
   const totalImages = images.length;
 
   useEffect(() => {
-    images.forEach((src) => {
-      const image = new Image();
-      image.src = src;
+    let isMounted = true;
+
+    const preloadImages = images.map(
+      (src) =>
+        new Promise((resolve) => {
+          const image = new Image();
+
+          image.onload = resolve;
+          image.onerror = resolve;
+          image.src = src;
+
+          if (image.complete) resolve();
+        })
+    );
+
+    Promise.all(preloadImages).then(() => {
+      if (isMounted) setImagesReady(true);
     });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    if (isPaused) return undefined;
+    if (isPaused || !imagesReady || totalImages <= 1) return undefined;
 
     const intervalId = window.setInterval(() => {
-      setDirection(1);
       setIndex((previousIndex) => (previousIndex + 1) % totalImages);
     }, 4500);
 
     return () => window.clearInterval(intervalId);
-  }, [isPaused, totalImages]);
+  }, [imagesReady, isPaused, totalImages]);
 
   const nextImage = () => {
-    setDirection(1);
     setIndex((previousIndex) => (previousIndex + 1) % totalImages);
   };
 
   const previousImage = () => {
-    setDirection(-1);
     setIndex((previousIndex) =>
       previousIndex === 0 ? totalImages - 1 : previousIndex - 1
     );
   };
 
   const goToImage = (imageIndex) => {
-    setDirection(imageIndex > index ? 1 : -1);
     setIndex(imageIndex);
   };
 
@@ -376,40 +390,45 @@ export default function Galeria() {
               "
               style={{ borderRadius: "36px 36px 18px 18px" }}
             >
-              <AnimatePresence custom={direction} mode="wait">
-                <motion.img
-                  key={images[index]}
-                  custom={direction}
-                  src={images[index]}
-                  alt={`Fotografía ${index + 1} de Aurora`}
-                  className="
-                    absolute inset-0 h-full w-full
-                    object-cover object-center
-                  "
-                  initial={{
-                    opacity: 0,
-                    scale: 1.025,
-                    x: direction > 0 ? 18 : -18,
-                  }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{
-                    opacity: 0,
-                    scale: 1.012,
-                    x: direction > 0 ? -16 : 16,
-                  }}
-                  transition={{
-                    opacity: { duration: 0.65 },
-                    scale: {
-                      duration: 1.2,
-                      ease: [0.22, 1, 0.36, 1],
-                    },
-                    x: {
-                      duration: 0.8,
-                      ease: [0.22, 1, 0.36, 1],
-                    },
-                  }}
-                />
-              </AnimatePresence>
+              {images.map((src, imageIndex) => {
+                const isActive = imageIndex === index;
+
+                return (
+                  <motion.img
+                    key={src}
+                    src={src}
+                    alt={
+                      isActive
+                        ? `Fotografía ${imageIndex + 1} de Aurora`
+                        : ""
+                    }
+                    aria-hidden={!isActive}
+                    loading="eager"
+                    decoding="async"
+                    draggable="false"
+                    className="
+                      absolute inset-0 h-full w-full
+                      object-cover object-center
+                    "
+                    style={{ zIndex: isActive ? 2 : 1 }}
+                    initial={false}
+                    animate={{
+                      opacity: isActive ? 1 : 0,
+                      scale: isActive ? 1 : 1.015,
+                    }}
+                    transition={{
+                      opacity: {
+                        duration: 0.7,
+                        ease: "easeInOut",
+                      },
+                      scale: {
+                        duration: 1,
+                        ease: [0.22, 1, 0.36, 1],
+                      },
+                    }}
+                  />
+                );
+              })}
 
               <div
                 className="pointer-events-none absolute inset-0"

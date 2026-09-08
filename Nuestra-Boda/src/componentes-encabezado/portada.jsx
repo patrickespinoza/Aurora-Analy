@@ -474,13 +474,13 @@ export default function Portada() {
         style={{ backgroundColor: colores.texto }}
       >
         <motion.img
-          src="/portada.png"
+          src="/portada.jpeg"
           alt="Aurora Analy"
           loading="eager"
           fetchPriority="high"
           decoding="async"
           draggable="false"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-[center_70%]"
           initial={{ opacity: 0 }}
           animate={
             mostrarContenido
@@ -530,8 +530,8 @@ export default function Portada() {
         <motion.div
           className="
             relative z-20 flex min-h-[100dvh] w-full flex-col
-            items-center justify-end px-6 pb-10 pt-12 text-center
-            sm:px-12 sm:pb-16 lg:px-16
+            items-center justify-start px-6 pb-6 pt-5 text-center
+            sm:px-12 sm:pb-10 sm:pt-8 lg:px-16 lg:pt-10
           "
           initial={{ opacity: 0 }}
           animate={{ opacity: mostrarContenido ? 1 : 0 }}
@@ -555,7 +555,7 @@ export default function Portada() {
    
             <h1
               className="
-                mt-3 font-cursiveDancing text-[52px] font-normal
+                mt-3 font-cursiveDancing text-[50px] font-normal
                 leading-[0.82] text-white sm:text-[82px] lg:text-[96px]
               "
               style={{ textShadow: "0 4px 24px rgba(75,27,43,0.35)" }}
@@ -582,7 +582,7 @@ export default function Portada() {
           </motion.div>
 
           <motion.div
-            className="mt-5 flex flex-col items-center sm:mt-8"
+            className="mt-auto flex flex-col items-center pt-5 sm:pt-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: mostrarContenido ? 1 : 0 }}
             transition={{ duration: 1, delay: 1 }}

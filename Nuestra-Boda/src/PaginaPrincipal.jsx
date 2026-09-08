@@ -4,6 +4,7 @@ import Regalos from "./componentes-encabezado/Regalos";
 import Confirmacion from "./componentes-encabezado/Confirmacion";
 import EventoDireccion from "./componentes-encabezado/Ubicacion";
 import Galeria from "./componentes-encabezado/Galeria";
+import ImagenFinal from "./componentes-encabezado/final";
 
 
 
@@ -52,6 +53,8 @@ export default function PaginaPrincipal() {
 <Regalos/>
 
 <Confirmacion/>
+
+<ImagenFinal/>
   
 
       </div>      
