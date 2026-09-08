@@ -19,19 +19,13 @@ const transicion = {
 
 function Flor({ rosa = false, className = "", delay = 0 }) {
   return (
-    <motion.span
+    <span
       aria-hidden="true"
       className={`pointer-events-none absolute select-none ${className}`}
-      animate={{ y: [0, -8, 0], rotate: [-2, 3, -2] }}
-      transition={{
-        duration: 4,
-        delay,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
+      style={{ transform: `rotate(${delay % 2 === 0 ? -3 : 3}deg)` }}
     >
       {rosa ? "🌸" : "🌼"}
-    </motion.span>
+    </span>
   );
 }
 
@@ -133,7 +127,7 @@ export default function Portada() {
       className="relative min-h-screen w-full overflow-hidden"
       style={{ backgroundColor: colores.crema, color: colores.texto }}
     >
-      <audio ref={audioRef} loop preload="auto">
+      <audio ref={audioRef} loop preload="none">
         <source src="/TylerShaw.mp3" type="audio/mpeg" />
       </audio>
 
@@ -143,8 +137,8 @@ export default function Portada() {
             key="intro-aurora"
             className="
               fixed inset-0 z-[9999] flex h-[100dvh] w-full
-              items-center justify-center overflow-hidden overscroll-none
-              px-4 py-5 sm:px-8 lg:px-12
+              items-center justify-center overflow-x-hidden overflow-y-auto
+              overscroll-none px-4 py-7 sm:px-8 sm:py-8 lg:px-12
             "
             style={{
               backgroundColor: colores.rosaFondo,
@@ -192,7 +186,7 @@ export default function Portada() {
             <div
               className="
                 relative z-10 mx-auto grid w-full max-w-6xl items-center
-                gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16
+                gap-3 sm:gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16
               "
             >
               <motion.div
@@ -215,7 +209,7 @@ export default function Portada() {
 
                 <h1
                   className="
-                    mt-2 font-cursiveDancing text-[48px] font-normal
+                    mt-2 font-cursiveDancing text-[40px] font-normal
                     leading-[0.9] sm:text-[78px] lg:text-[88px]
                   "
                   style={{ color: colores.rosaFuerte }}
@@ -239,8 +233,9 @@ export default function Portada() {
 
                 <p
                   className="
-                    mt-4 max-w-md font-serif text-sm italic leading-6
+                    mt-4 hidden max-w-md font-serif text-sm italic leading-6
                     sm:mt-6 sm:text-base sm:leading-7
+                    sm:block
                   "
                 >
                   Un año de sonrisas, juegos y mucho amor merece una
@@ -249,7 +244,7 @@ export default function Portada() {
 
                 <p
                   className="
-                    mt-3 font-serif text-xs font-semibold uppercase
+                    mt-2 font-serif text-xs font-semibold uppercase
                     tracking-[0.22em] sm:mt-5 sm:text-sm
                   "
                   style={{ color: colores.rosaFuerte }}
@@ -275,8 +270,9 @@ export default function Portada() {
                   tabIndex={0}
                   aria-label="Abrir invitación de Aurora Analy"
                   className="
-                    relative aspect-[350/235] w-[78vw] max-w-[310px]
-                    cursor-pointer outline-none sm:max-w-[430px] lg:w-full
+                    relative aspect-[350/235] w-[68vw] max-w-[270px]
+                    cursor-pointer outline-none sm:w-[78vw]
+                    sm:max-w-[430px] lg:w-full
                   "
                   style={{ perspective: 2200 }}
                 >
@@ -284,7 +280,7 @@ export default function Portada() {
                     className="
                       absolute -bottom-7 left-1/2 h-12 w-[72%]
                       -translate-x-1/2 rounded-full
-                      bg-[#D94F82]/20 blur-2xl
+                      bg-[#D94F82]/20 blur-xl
                     "
                   />
 
@@ -464,7 +460,7 @@ export default function Portada() {
 
                 <motion.p
                   className="
-                    mt-3 text-center text-[9px] font-semibold uppercase
+                    mt-2 text-center text-[9px] font-semibold uppercase
                     tracking-[0.25em] sm:mt-7 sm:text-[10px]
                   "
                   style={{ color: colores.rosaFuerte }}
@@ -475,8 +471,8 @@ export default function Portada() {
 
                 <motion.div
                   className="
-                    mt-3 w-full max-w-[330px] rounded-[28px]
-                    border-2 border-dashed bg-white/75 px-4 py-3
+                    mt-2 w-full max-w-[300px] rounded-[24px]
+                    border-2 border-dashed bg-white/75 px-4 py-2.5
                     text-center sm:mt-8 sm:max-w-[390px] sm:px-7 sm:py-5
                   "
                   style={{ borderColor: colores.rosaClaro }}
@@ -520,17 +516,18 @@ export default function Portada() {
         <motion.img
           src="/portada.png"
           alt="Aurora Analy"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          draggable="false"
           className="absolute inset-0 h-full w-full object-cover object-center"
-          initial={{ opacity: 0, scale: 1.035 }}
+          initial={{ opacity: 0 }}
           animate={
             mostrarContenido
-              ? { opacity: 1, scale: 1 }
-              : { opacity: 0, scale: 1.035 }
+              ? { opacity: 1 }
+              : { opacity: 0 }
           }
-          transition={{
-            opacity: { duration: 1.2 },
-            scale: { duration: 7, ease: "easeOut" },
-          }}
+          transition={{ opacity: { duration: 0.8 } }}
         />
 
         <motion.div
@@ -583,7 +580,7 @@ export default function Portada() {
           <motion.div
             className="
               w-full max-w-2xl rounded-[42px] border border-white/60
-              bg-[#A93E67]/20 px-5 py-7 backdrop-blur-[2px]
+              bg-[#A93E67]/30 px-5 py-7
               sm:px-10 sm:py-9
             "
             initial={{ opacity: 0, y: 24 }}
