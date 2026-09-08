@@ -1,94 +1,46 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Countdown from "./encabeza-cuenta";
 
-/* =========================================
-   PORTADA CLÁSICA EDITORIAL
-========================================= */
-
-const palette = {
-  ink: "#1D2733",
-  inkSoft: "#35404B",
-  paper: "#F5F1E8",
-  paperLight: "#FBF9F4",
-  paperDark: "#DED6C8",
-  antiqueGold: "#A48654",
-  antiqueGoldDark: "#755E39",
-  warmGray: "#777168",
-  line: "#C8BDAA",
+const colores = {
+  rosa: "#F277A2",
+  rosaFuerte: "#D94F82",
+  rosaClaro: "#FFDCE8",
+  rosaFondo: "#FFF1F6",
+  crema: "#FFF9ED",
+  amarillo: "#F5C44D",
+  naranja: "#E9873D",
+  texto: "#67444D",
 };
 
-const transition = {
+const transicion = {
   duration: 0.9,
   ease: [0.22, 1, 0.36, 1],
 };
 
-function CornerOrnament({ className = "" }) {
+function Flor({ rosa = false, className = "", delay = 0 }) {
   return (
-    <svg
-      viewBox="0 0 80 80"
-      fill="none"
+    <motion.span
       aria-hidden="true"
-      className={className}
+      className={`pointer-events-none absolute select-none ${className}`}
+      animate={{ y: [0, -8, 0], rotate: [-2, 3, -2] }}
+      transition={{
+        duration: 4,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
     >
-      <path
-        d="M4 76V25C4 13.4 13.4 4 25 4h51"
-        stroke="currentColor"
-        strokeWidth="1"
-      />
-
-      <path
-        d="M13 64V29c0-8.8 7.2-16 16-16h35"
-        stroke="currentColor"
-        strokeWidth="0.65"
-      />
-
-      <path
-        d="M25 4c0 11.6-9.4 21-21 21"
-        stroke="currentColor"
-        strokeWidth="0.7"
-      />
-
-      <circle cx="13" cy="13" r="1.8" fill="currentColor" />
-
-      <path
-        d="M18 18c10 3 17 10 20 20"
-        stroke="currentColor"
-        strokeWidth="0.65"
-      />
-    </svg>
+      {rosa ? "🌸" : "🌼"}
+    </motion.span>
   );
 }
 
-function DecorativeDivider({ dark = false }) {
+function Separador() {
   return (
-    <div className="flex w-full items-center justify-center gap-3">
-      <span
-        className="h-px w-10 sm:w-16"
-        style={{
-          background: dark
-            ? "linear-gradient(to right, transparent, rgba(164,134,84,0.8))"
-            : "linear-gradient(to right, transparent, rgba(164,134,84,0.65))",
-        }}
-      />
-
-      <span
-        className="h-[5px] w-[5px] rotate-45 border"
-        style={{
-          borderColor: dark
-            ? "rgba(164,134,84,0.85)"
-            : "rgba(164,134,84,0.7)",
-        }}
-      />
-
-      <span
-        className="h-px w-10 sm:w-16"
-        style={{
-          background: dark
-            ? "linear-gradient(to left, transparent, rgba(164,134,84,0.8))"
-            : "linear-gradient(to left, transparent, rgba(164,134,84,0.65))",
-        }}
-      />
+    <div className="flex items-center justify-center gap-3" aria-hidden="true">
+      <span className="h-px w-12 bg-gradient-to-r from-transparent to-[#F5C44D]" />
+      <span className="text-xl">🌼</span>
+      <span className="h-px w-12 bg-gradient-to-l from-transparent to-[#F5C44D]" />
     </div>
   );
 }
@@ -100,485 +52,217 @@ export default function Portada() {
   const [mostrarContenido, setMostrarContenido] = useState(false);
   const [abrirSobre, setAbrirSobre] = useState(false);
   const [procesandoApertura, setProcesandoApertura] = useState(false);
-
-  const [invitados, setInvitados] = useState("Invitado");
+  const [invitados, setInvitados] = useState("Invitado especial");
   const [pases, setPases] = useState(1);
 
-  /* =========================================
-     DATOS PERSONALIZADOS DESDE LA URL
-  ========================================= */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (!id) return;
+
+    try {
+      const idNormalizado = decodeURIComponent(id)
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+      const paddingFaltante = idNormalizado.length % 4;
+      const idConPadding =
+        paddingFaltante === 0
+          ? idNormalizado
+          : idNormalizado + "=".repeat(4 - paddingFaltante);
+
+      const textoInvertido = atob(idConPadding);
+      const textoOriginal = textoInvertido.split("").reverse().join("");
+      const datos = JSON.parse(textoOriginal);
+
+      const nombre =
+        typeof datos.nombre === "string" ? datos.nombre.trim() : "";
+      const cantidadPases = Number.parseInt(datos.pases, 10);
+
+      if (nombre) setInvitados(nombre);
+
+      if (!Number.isNaN(cantidadPases) && cantidadPases > 0) {
+        setPases(cantidadPases);
+      }
+    } catch (error) {
+      console.error("No se pudieron leer los datos del invitado:", error);
+    }
+  }, []);
 
   useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+    if (!introActiva) return;
 
-  if (!id) {
-    setInvitados("Invitado");
-    setPases(1);
-    return;
-  }
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
-  try {
-    // Recuperar caracteres que pudieron cambiar dentro de la URL.
-    const idNormalizado = decodeURIComponent(id)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-
-    // Agregar padding de Base64 cuando sea necesario.
-    const paddingFaltante = idNormalizado.length % 4;
-    const idConPadding =
-      paddingFaltante === 0
-        ? idNormalizado
-        : idNormalizado + "=".repeat(4 - paddingFaltante);
-
-    // Decodificar Base64.
-    const textoInvertido = atob(idConPadding);
-
-    // Volver al orden original.
-    const textoOriginal = textoInvertido
-      .split("")
-      .reverse()
-      .join("");
-
-    // Recuperar los datos.
-    const datos = JSON.parse(textoOriginal);
-
-    const nombreDecodificado =
-      typeof datos.nombre === "string"
-        ? datos.nombre.trim()
-        : "";
-
-    const pasesDecodificados = Number.parseInt(datos.pases, 10);
-
-    if (nombreDecodificado) {
-      setInvitados(nombreDecodificado);
-    }
-
-    if (
-      !Number.isNaN(pasesDecodificados) &&
-      pasesDecodificados > 0
-    ) {
-      setPases(pasesDecodificados);
-    }
-  } catch (error) {
-    console.error(
-      "No se pudieron decodificar los datos de la invitación:",
-      error
-    );
-
-    setInvitados("Invitado");
-    setPases("");
-  }
-}, []);
-
-
-useEffect(() => {
-  if (!introActiva) return;
-
-  const scrollAnterior = window.scrollY;
-
-  document.body.style.overflow = "hidden";
-  document.documentElement.style.overflow = "hidden";
-
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "auto",
-  });
-
-  return () => {
-    document.body.style.overflow = "";
-    document.documentElement.style.overflow = "";
-
-    window.scrollTo({
-      top: scrollAnterior > 0 ? 0 : scrollAnterior,
-      left: 0,
-      behavior: "auto",
-    });
-  };
-}, [introActiva]);
-  /* =========================================
-     ABRIR INVITACIÓN
-  ========================================= */
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    };
+  }, [introActiva]);
 
   const iniciarExperiencia = () => {
-  if (procesandoApertura || abrirSobre) return;
+    if (procesandoApertura || abrirSobre) return;
 
-  setProcesandoApertura(true);
+    setProcesandoApertura(true);
+    setAbrirSobre(true);
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "auto",
-  });
+    window.setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.volume = 0.45;
+        audioRef.current.play().catch((error) => {
+          console.warn("No se pudo reproducir el audio:", error);
+        });
+      }
+    }, 400);
 
-  setAbrirSobre(true);
-
-  window.setTimeout(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.45;
-
-      audioRef.current.play().catch((error) => {
-        console.warn("No se pudo reproducir el audio:", error);
-      });
-    }
-  }, 400);
-
-  window.setTimeout(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "auto",
-    });
-
-    setIntroActiva(false);
-    setMostrarContenido(true);
-    setProcesandoApertura(false);
-  }, 1900);
-};
+    window.setTimeout(() => {
+      setIntroActiva(false);
+      setMostrarContenido(true);
+      setProcesandoApertura(false);
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, 1900);
+  };
 
   return (
     <div
-      className="
-        relative
-        min-h-screen
-        w-full
-        overflow-hidden
-      "
-      style={{
-        backgroundColor: palette.paperLight,
-        color: palette.ink,
-      }}
+      className="relative min-h-screen w-full overflow-hidden"
+      style={{ backgroundColor: colores.crema, color: colores.texto }}
     >
-      {/* AUDIO */}
-
       <audio ref={audioRef} loop preload="auto">
         <source src="/TylerShaw.mp3" type="audio/mpeg" />
       </audio>
 
-      {/* =========================================
-          INTRO DEL SOBRE
-      ========================================= */}
-
       <AnimatePresence mode="wait">
         {introActiva && (
           <motion.section
-  key="intro-clasica"
-  className="
-    fixed
-    inset-0
-    z-[9999]
-    flex
-    h-[100dvh]
-    w-full
-    items-center
-    justify-center
-    overflow-hidden
-    overscroll-none
-    px-4
-    py-3
-    sm:px-8
-    lg:px-12
-  "
-  style={{
-    backgroundColor: palette.paperLight,
-    backgroundImage: `
-      repeating-linear-gradient(
-        0deg,
-        rgba(53,64,75,0.018) 0px,
-        rgba(53,64,75,0.018) 1px,
-        transparent 1px,
-        transparent 5px
-      )
-    `,
-    touchAction: "none",
-  }}
-  initial={{ opacity: 1 }}
-  exit={{
-    opacity: 0,
-    scale: 1.01,
-  }}
-  transition={{
-    duration: 0.75,
-    ease: [0.22, 1, 0.36, 1],
-  }}
->
-            {/* MARCO EXTERIOR */}
-
+            key="intro-aurora"
+            className="
+              fixed inset-0 z-[9999] flex h-[100dvh] w-full
+              items-center justify-center overflow-hidden overscroll-none
+              px-4 py-5 sm:px-8 lg:px-12
+            "
+            style={{
+              backgroundColor: colores.rosaFondo,
+              touchAction: "none",
+            }}
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 0.75 }}
+          >
             <div
-              className="
-                pointer-events-none
-                absolute
-                inset-4
-                border
-                sm:inset-7
-                lg:inset-9
-              "
+              className="pointer-events-none absolute inset-4 border-2 sm:inset-7"
               style={{
-                borderColor: "rgba(164,134,84,0.3)",
+                borderColor: "rgba(242,119,162,0.55)",
+                borderRadius: "45% 55% 47% 53% / 6% 8% 7% 9%",
               }}
             />
 
             <div
               className="
-                pointer-events-none
-                absolute
-                inset-[21px]
-                border
-                sm:inset-[34px]
-                lg:inset-[42px]
+                pointer-events-none absolute inset-[22px]
+                border border-dashed opacity-70 sm:inset-9
               "
               style={{
-                borderColor: "rgba(164,134,84,0.12)",
+                borderColor: "rgba(245,196,77,0.75)",
+                borderRadius: "53% 47% 55% 45% / 8% 6% 9% 7%",
               }}
             />
 
-            <CornerOrnament
-              className="
-                pointer-events-none
-                absolute
-                left-5
-                top-5
-                h-16
-                w-16
-                text-[#A48654]/50
-                sm:left-8
-                sm:top-8
-                sm:h-20
-                sm:w-20
-              "
+            <Flor className="left-1 top-1 text-6xl sm:left-5 sm:top-4 sm:text-8xl" />
+            <Flor
+              rosa
+              delay={0.8}
+              className="right-2 top-7 text-5xl sm:right-7 sm:text-7xl"
             />
-
-            <CornerOrnament
-              className="
-                pointer-events-none
-                absolute
-                right-5
-                top-5
-                h-16
-                w-16
-                rotate-90
-                text-[#A48654]/50
-                sm:right-8
-                sm:top-8
-                sm:h-20
-                sm:w-20
-              "
+            <Flor
+              rosa
+              delay={1.4}
+              className="bottom-5 left-5 text-4xl sm:text-6xl"
             />
-
-            <CornerOrnament
-              className="
-                pointer-events-none
-                absolute
-                bottom-5
-                left-5
-                h-16
-                w-16
-                -rotate-90
-                text-[#A48654]/50
-                sm:bottom-8
-                sm:left-8
-                sm:h-20
-                sm:w-20
-              "
-            />
-
-            <CornerOrnament
-              className="
-                pointer-events-none
-                absolute
-                bottom-5
-                right-5
-                h-16
-                w-16
-                rotate-180
-                text-[#A48654]/50
-                sm:bottom-8
-                sm:right-8
-                sm:h-20
-                sm:w-20
-              "
+            <Flor
+              delay={0.4}
+              className="bottom-1 right-0 text-7xl sm:right-5 sm:text-8xl"
             />
 
             <div
               className="
-                relative
-                z-10
-                mx-auto
-                grid
-                w-full
-                max-w-6xl
-                items-center
-                gap-4
-                sm:gap-8
-                lg:grid-cols-[0.95fr_1.05fr]
-                lg:gap-16
-                xl:gap-24
+                relative z-10 mx-auto grid w-full max-w-6xl items-center
+                gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16
               "
             >
-              {/* PRESENTACIÓN */}
-
               <motion.div
                 className="
-                  order-1
-                  flex
-                  flex-col
-                  items-center
-                  text-center
-                  lg:items-start
-                  lg:text-left
+                  order-1 flex flex-col items-center text-center
+                  lg:items-start lg:text-left
                 "
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  ...transition,
-                  delay: 0.1,
-                }}
+                transition={{ ...transicion, delay: 0.1 }}
               >
                 <p
-                  className="
-                    text-[9px]
-                    uppercase
-                    tracking-[0.42em]
-                    sm:text-[10px]
-                  "
-                  style={{ color: palette.antiqueGoldDark }}
+                  className="text-[10px] font-bold uppercase tracking-[0.35em]"
+                  style={{ color: colores.naranja }}
                 >
-                  Invitación de boda
+                  Una invitación muy especial
                 </p>
 
-                <div
+                <span className="mt-3 text-2xl sm:mt-5">🌼</span>
+
+                <h1
                   className="
-                    mt-3
-                    sm:mt-6
-                    h-px
-                    w-16
-                    lg:w-20
+                    mt-2 font-cursiveDancing text-[48px] font-normal
+                    leading-[0.9] sm:text-[78px] lg:text-[88px]
                   "
-                  style={{
-                    backgroundColor: "rgba(164,134,84,0.7)",
-                  }}
-                />
+                  style={{ color: colores.rosaFuerte }}
+                >
+                  Aurora Analy
+                </h1>
 
                 <p
                   className="
-                    mt-3
-                    sm:mt-7
-                    font-serif
-                    text-[10px]
-                    uppercase
-                    tracking-[0.22em]
-                    sm:text-sm
+                    mt-3 font-serif text-base font-semibold uppercase
+                    tracking-[0.18em] sm:mt-5 sm:text-xl
                   "
-                  style={{ color: palette.warmGray }}
+                  style={{ color: colores.naranja }}
                 >
-                  Junto con nuestras familias
+                  Cumple un añito
                 </p>
 
-                <h1
-                  className="
-                    mt-3
-                    sm:mt-6
-                    font-serif
-                    text-[34px]
-                    font-normal
-                    leading-[0.95]
-                    tracking-[-0.025em]
-                    sm:text-[60px]
-                    md:text-[68px]
-                    lg:text-[62px]
-                    xl:text-[76px]
-                  "
-                  style={{ color: palette.ink }}
-                >
-                  Valeria
-                </h1>
-
-                <span
-                  className="
-                    my-1
-                    sm:my-2
-                    font-cursiveDancing
-                    text-2xl
-                    sm:text-4xl
-                  "
-                  style={{ color: palette.antiqueGold }}
-                >
-                  &
-                </span>
-
-                <h1
-                  className="
-                    font-serif
-                    text-[34px]
-                    font-normal
-                    leading-[0.95]
-                    tracking-[-0.025em]
-                    sm:text-[60px]
-                    md:text-[68px]
-                    lg:text-[62px]
-                    xl:text-[76px]
-                  "
-                  style={{ color: palette.ink }}
-                >
-                  Alejandro
-                </h1>
-
-                <div className="mt-4 w-full max-w-[220px] sm:mt-8 sm:max-w-[260px]">
-                  <DecorativeDivider />
+                <div className="mt-4 w-full max-w-[240px] sm:mt-6">
+                  <Separador />
                 </div>
 
                 <p
                   className="
-                    mt-3
-                    sm:mt-6
-                    font-serif
-                    text-[10px]
-                    uppercase
-                    tracking-[0.32em]
-                    sm:text-sm
+                    mt-4 max-w-md font-serif text-sm italic leading-6
+                    sm:mt-6 sm:text-base sm:leading-7
                   "
-                  style={{ color: palette.inkSoft }}
                 >
-                  11 · Junio · 2027
+                  Un año de sonrisas, juegos y mucho amor merece una
+                  celebración inolvidable.
                 </p>
 
                 <p
                   className="
-                    mt-3
-                    sm:mt-5
-                    max-w-md
-                    font-serif
-                    text-[12px]
-                    italic
-                    leading-5
-                    sm:text-base
-                    sm:leading-7
+                    mt-3 font-serif text-xs font-semibold uppercase
+                    tracking-[0.22em] sm:mt-5 sm:text-sm
                   "
-                  style={{ color: palette.warmGray }}
+                  style={{ color: colores.rosaFuerte }}
                 >
-                  Hay momentos que cambian nuestra historia para siempre.
-                  Queremos compartir este con ustedes.
+                  10 · Octubre · 2026
                 </p>
               </motion.div>
 
-              {/* SOBRE E INFORMACIÓN DEL INVITADO */}
-
               <motion.div
-                className="
-                  order-2
-                  flex
-                  w-full
-                  flex-col
-                  items-center
-                  justify-center
-                "
+                className="order-2 flex w-full flex-col items-center"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  ...transition,
-                  delay: 0.25,
-                }}
+                transition={{ ...transicion, delay: 0.25 }}
               >
                 <div
                   onClick={iniciarExperiencia}
@@ -589,76 +273,37 @@ useEffect(() => {
                   }}
                   role="button"
                   tabIndex={0}
-                  aria-label="Abrir invitación"
+                  aria-label="Abrir invitación de Aurora Analy"
                   className="
-                    group
-                    relative
-                    aspect-[350/235]
-                    w-[76vw]
-                    max-w-[300px]
-                    sm:w-[88vw]
-                    sm:max-w-[420px]
-                    cursor-pointer
-                    outline-none
-                    lg:w-full
-                    lg:max-w-[430px]
+                    relative aspect-[350/235] w-[78vw] max-w-[310px]
+                    cursor-pointer outline-none sm:max-w-[430px] lg:w-full
                   "
-                  style={{
-                    perspective: 2200,
-                  }}
+                  style={{ perspective: 2200 }}
                 >
-                  {/* SOMBRA DEL SOBRE */}
-
                   <div
                     className="
-                      absolute
-                      -bottom-7
-                      left-1/2
-                      h-12
-                      w-[72%]
-                      -translate-x-1/2
-                      rounded-full
-                      bg-black/15
-                      blur-2xl
+                      absolute -bottom-7 left-1/2 h-12 w-[72%]
+                      -translate-x-1/2 rounded-full
+                      bg-[#D94F82]/20 blur-2xl
                     "
                   />
 
-                  {/* CARTA INTERIOR */}
-
                   <motion.div
                     className="
-                      absolute
-                      left-1/2
-                      top-[9%]
-                      z-10
-                      flex
-                      h-[78%]
-                      w-[82%]
-                      -translate-x-1/2
-                      flex-col
-                      items-center
-                      justify-center
-                      overflow-hidden
-                      border
-                      px-5
-                      py-5
-                      text-center
+                      absolute left-1/2 top-[8%] z-10 flex h-[80%] w-[82%]
+                      -translate-x-1/2 flex-col items-center justify-center
+                      overflow-hidden border-2 px-5 py-4 text-center
                     "
                     style={{
-                      backgroundColor: palette.paperLight,
-                      borderColor: "rgba(164,134,84,0.32)",
-                      boxShadow: "0 14px 30px rgba(29,39,51,0.13)",
+                      backgroundColor: colores.crema,
+                      borderColor: colores.rosaClaro,
+                      borderRadius: "35% 35% 18% 18% / 16% 16% 12% 12%",
+                      boxShadow: "0 14px 30px rgba(180,73,111,0.16)",
                     }}
                     animate={
                       abrirSobre
-                        ? {
-                            y: -82,
-                            scale: 1.015,
-                          }
-                        : {
-                            y: 0,
-                            scale: 1,
-                          }
+                        ? { y: -84, scale: 1.015 }
+                        : { y: 0, scale: 1 }
                     }
                     transition={{
                       duration: 1.15,
@@ -666,231 +311,109 @@ useEffect(() => {
                       ease: [0.22, 1, 0.36, 1],
                     }}
                   >
-                    <CornerOrnament
-                      className="
-                        absolute
-                        left-2
-                        top-2
-                        h-10
-                        w-10
-                        text-[#A48654]/35
-                      "
-                    />
-
-                    <CornerOrnament
-                      className="
-                        absolute
-                        bottom-2
-                        right-2
-                        h-10
-                        w-10
-                        rotate-180
-                        text-[#A48654]/35
-                      "
-                    />
-
-                    <p
-                      className="
-                        text-[7px]
-                        uppercase
-                        tracking-[0.38em]
-                        sm:text-[8px]
-                      "
-                      style={{ color: palette.antiqueGoldDark }}
-                    >
-                      The wedding of
-                    </p>
-
-                    <div
-                      className="
-                        my-4
-                        h-px
-                        w-12
-                      "
-                      style={{
-                        backgroundColor: "rgba(164,134,84,0.65)",
-                      }}
-                    />
-
-                    <p
-                      className="
-                        font-serif
-                        text-[21px]
-                        leading-tight
-                        sm:text-[25px]
-                      "
-                      style={{ color: palette.ink }}
-                    >
-                      Valeria
-                    </p>
-
-                    <span
-                      className="
-                        my-0.5
-                        font-cursiveDancing
-                        text-lg
-                        sm:text-xl
-                      "
-                      style={{ color: palette.antiqueGold }}
-                    >
-                      &
+                    <span className="absolute left-3 top-2 text-2xl">🌼</span>
+                    <span className="absolute bottom-2 right-3 text-2xl">
+                      🌸
                     </span>
 
                     <p
-                      className="
-                        font-serif
-                        text-[21px]
-                        leading-tight
-                        sm:text-[25px]
-                      "
-                      style={{ color: palette.ink }}
+                      className="text-[8px] font-bold uppercase tracking-[0.3em]"
+                      style={{ color: colores.naranja }}
                     >
-                      Alejandro
+                      Mi primer cumpleaños
                     </p>
 
                     <p
                       className="
-                        mt-4
-                        text-[7px]
-                        uppercase
-                        tracking-[0.25em]
-                        sm:text-[8px]
+                        mt-3 font-cursiveDancing text-[32px]
+                        leading-none sm:text-[42px]
                       "
-                      style={{ color: palette.warmGray }}
+                      style={{ color: colores.rosaFuerte }}
                     >
-                      11 · 06 · 2027
+                      Aurora Analy
+                    </p>
+
+                    <div
+                      className="
+                        my-2 flex h-11 w-11 items-center justify-center
+                        rounded-2xl border-2 border-dashed bg-white
+                        text-3xl font-bold
+                      "
+                      style={{
+                        color: colores.rosa,
+                        borderColor: colores.amarillo,
+                      }}
+                    >
+                      1
+                    </div>
+
+                    <p className="text-[8px] font-bold uppercase tracking-[0.22em]">
+                      10 · 10 · 2026
                     </p>
                   </motion.div>
 
-                  {/* CUERPO DEL SOBRE */}
-
                   <motion.div
                     className="
-                      absolute
-                      inset-0
-                      overflow-hidden
-                      border
+                      absolute inset-0 overflow-hidden
+                      rounded-b-[30px] rounded-t-[18px] border
                     "
                     style={{
-                      background: `
-                        linear-gradient(
-                          145deg,
-                          #E8E0D2 0%,
-                          #DCD2C1 52%,
-                          #CFC3B0 100%
-                        )
-                      `,
-                      borderColor: "rgba(117,94,57,0.25)",
-                      boxShadow: `
-                        0 28px 55px rgba(29,39,51,0.16),
-                        inset 0 1px 0 rgba(255,255,255,0.65)
-                      `,
+                      borderColor: "rgba(217,79,130,0.22)",
+                      background:
+                        "linear-gradient(145deg, #FFD7E4 0%, #F8AFC6 55%, #F38EB0 100%)",
+                      boxShadow:
+                        "0 28px 55px rgba(180,73,111,0.19), inset 0 1px 0 rgba(255,255,255,0.7)",
                     }}
                     animate={
                       abrirSobre
-                        ? {
-                            scale: 1.012,
-                            y: 6,
-                          }
-                        : {
-                            scale: 1,
-                            y: 0,
-                          }
+                        ? { scale: 1.012, y: 6 }
+                        : { scale: 1, y: 0 }
                     }
-                    transition={{
-                      duration: 1.1,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
+                    transition={{ duration: 1.1 }}
                   >
-                    {/* TEXTURA DE PAPEL */}
-
                     <div
-                      className="absolute inset-0 opacity-[0.15]"
+                      className="absolute inset-0 opacity-25"
                       style={{
-                        backgroundImage: `
-                          repeating-linear-gradient(
-                            90deg,
-                            rgba(53,64,75,0.08) 0px,
-                            rgba(53,64,75,0.08) 1px,
-                            transparent 1px,
-                            transparent 5px
-                          )
-                        `,
+                        backgroundImage:
+                          "linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px), linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px)",
+                        backgroundSize: "28px 28px",
                       }}
                     />
 
-                    {/* SOLAPAS INFERIORES */}
-
                     <div
-                      className="
-                        absolute
-                        bottom-0
-                        left-0
-                        h-[72%]
-                        w-[53%]
-                        border-t
-                      "
+                      className="absolute bottom-0 left-0 h-[72%] w-[53%]"
                       style={{
                         clipPath: "polygon(0 0, 100% 100%, 0 100%)",
-                        borderColor: "rgba(117,94,57,0.15)",
                         background:
-                          "linear-gradient(145deg, rgba(255,255,255,0.16), transparent)",
+                          "linear-gradient(145deg, rgba(255,255,255,.25), transparent)",
                       }}
                     />
 
                     <div
-                      className="
-                        absolute
-                        bottom-0
-                        right-0
-                        h-[72%]
-                        w-[53%]
-                        border-t
-                      "
+                      className="absolute bottom-0 right-0 h-[72%] w-[53%]"
                       style={{
                         clipPath: "polygon(100% 0, 100% 100%, 0 100%)",
-                        borderColor: "rgba(117,94,57,0.15)",
                         background:
-                          "linear-gradient(215deg, rgba(255,255,255,0.12), transparent)",
+                          "linear-gradient(215deg, rgba(255,255,255,.18), transparent)",
                       }}
                     />
                   </motion.div>
 
-                  {/* TAPA DEL SOBRE */}
-
                   <motion.div
                     className="
-                      absolute
-                      left-0
-                      top-0
-                      z-20
-                      h-[54%]
-                      w-full
-                      origin-top
-                      overflow-hidden
+                      absolute left-0 top-0 z-20 h-[54%] w-full
+                      origin-top overflow-hidden
                     "
                     style={{
                       clipPath: "polygon(0 0, 50% 100%, 100% 0)",
-                      background: `
-                        linear-gradient(
-                          180deg,
-                          #E6DDCE 0%,
-                          #D5C9B7 100%
-                        )
-                      `,
-                      boxShadow: "0 13px 24px rgba(29,39,51,0.12)",
+                      background:
+                        "linear-gradient(180deg, #FFE4EC 0%, #F7B1C7 100%)",
                       backfaceVisibility: "hidden",
                     }}
                     animate={
                       abrirSobre
-                        ? {
-                            rotateX: -182,
-                            y: -3,
-                          }
-                        : {
-                            rotateX: 0,
-                            y: 0,
-                          }
+                        ? { rotateX: -182, y: -3 }
+                        : { rotateX: 0, y: 0 }
                     }
                     transition={{
                       duration: 1.2,
@@ -898,118 +421,42 @@ useEffect(() => {
                     }}
                   />
 
-                  {/* SELLO CLÁSICO */}
-
                   <motion.div
                     className="
-                      pointer-events-none
-                      absolute
-                      inset-0
-                      z-30
-                      flex
-                      items-center
-                      justify-center
+                      pointer-events-none absolute inset-0 z-30
+                      flex items-center justify-center
                     "
                     animate={
                       abrirSobre
-                        ? {
-                            scale: 0.7,
-                            opacity: 0,
-                            y: -16,
-                          }
-                        : {
-                            scale: 1,
-                            opacity: 1,
-                            y: 0,
-                          }
+                        ? { scale: 0.7, opacity: 0, y: -16 }
+                        : { scale: 1, opacity: 1, y: 0 }
                     }
-                    transition={{
-                      duration: 0.55,
-                    }}
+                    transition={{ duration: 0.55 }}
                   >
                     <div
                       className="
-                        relative
-                        flex
-                        h-[72px]
-                        w-[72px]
-                        items-center
-                        justify-center
-                        rounded-full
-                        sm:h-[86px]
-                        sm:w-[86px]
+                        flex h-[72px] w-[72px] items-center justify-center
+                        rounded-full border-4 text-4xl
+                        sm:h-[86px] sm:w-[86px]
                       "
                       style={{
-                        background: `
-                          radial-gradient(
-                            circle at 35% 28%,
-                            #B59A68 0%,
-                            #927545 45%,
-                            #6D5532 100%
-                          )
-                        `,
-                        boxShadow: `
-                          inset 0 2px 4px rgba(255,255,255,0.24),
-                          inset 0 -5px 9px rgba(45,34,19,0.28),
-                          0 10px 18px rgba(29,39,51,0.17)
-                        `,
+                        backgroundColor: colores.amarillo,
+                        borderColor: "#FFF0B5",
+                        boxShadow:
+                          "inset 0 2px 4px rgba(255,255,255,.45), 0 10px 18px rgba(180,73,111,.18)",
                       }}
                     >
-                      <div
-                        className="
-                          absolute
-                          inset-[7px]
-                          rounded-full
-                          border
-                        "
-                        style={{
-                          borderColor: "rgba(245,241,232,0.28)",
-                        }}
-                      />
-
-                      <div
-                        className="
-                          relative
-                          z-10
-                          font-serif
-                          text-lg
-                          italic
-                          sm:text-2xl
-                        "
-                        style={{
-                          color: "#E8DDCA",
-                          textShadow: "0 1px 2px rgba(29,39,51,0.35)",
-                        }}
-                      >
-                        V
-                        <span className="mx-1 text-[11px] sm:text-sm">
-                          &
-                        </span>
-                        A
-                      </div>
+                      🌼
                     </div>
                   </motion.div>
 
-                  {/* TEXTO ABRIR */}
-
                   <motion.p
                     className="
-                      pointer-events-none
-                      absolute
-                      inset-x-0
-                      top-4
-                      z-40
-                      text-center
-                      text-[8px]
-                      uppercase
-                      tracking-[0.4em]
-                      sm:text-[9px]
+                      pointer-events-none absolute inset-x-0 top-4 z-40
+                      text-center text-[8px] font-bold uppercase
+                      tracking-[0.4em] sm:text-[9px]
                     "
-                    style={{ color: palette.inkSoft }}
-                    animate={{
-                      opacity: abrirSobre ? 0 : 0.75,
-                    }}
-                    transition={{ duration: 0.35 }}
+                    animate={{ opacity: abrirSobre ? 0 : 0.75 }}
                   >
                     Abrir
                   </motion.p>
@@ -1017,101 +464,47 @@ useEffect(() => {
 
                 <motion.p
                   className="
-                    mt-3
-                    text-center
-                    text-[8px]
-                    uppercase
-                    tracking-[0.28em]
-                    sm:mt-7
-                    sm:text-[10px]
+                    mt-3 text-center text-[9px] font-semibold uppercase
+                    tracking-[0.25em] sm:mt-7 sm:text-[10px]
                   "
-                  style={{ color: palette.warmGray }}
-                  animate={{
-                    opacity: abrirSobre ? 0 : 1,
-                  }}
-                  transition={{ duration: 0.35 }}
+                  style={{ color: colores.rosaFuerte }}
+                  animate={{ opacity: abrirSobre ? 0 : 1 }}
                 >
                   Toca el sobre para comenzar
                 </motion.p>
 
-                {/* DATOS DEL INVITADO */}
-
                 <motion.div
                   className="
-                    mt-3
-                    w-full
-                    max-w-[330px]
-                    border-y
-                    px-3
-                    py-3
-                    text-center
-                    sm:mt-10
-                    sm:max-w-[390px]
-                    sm:px-7
-                    sm:py-5
+                    mt-3 w-full max-w-[330px] rounded-[28px]
+                    border-2 border-dashed bg-white/75 px-4 py-3
+                    text-center sm:mt-8 sm:max-w-[390px] sm:px-7 sm:py-5
                   "
-                  style={{
-                    borderColor: "rgba(164,134,84,0.35)",
-                  }}
+                  style={{ borderColor: colores.rosaClaro }}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    ...transition,
-                    delay: 0.45,
-                  }}
+                  transition={{ ...transicion, delay: 0.45 }}
                 >
                   <p
-                    className="
-                      text-[8px]
-                      uppercase
-                      tracking-[0.33em]
-                      sm:text-[9px]
-                    "
-                    style={{ color: palette.warmGray }}
+                    className="text-[8px] font-bold uppercase tracking-[0.3em]"
+                    style={{ color: colores.naranja }}
                   >
-                    Reservado especialmente para
+                    Invitación preparada para
                   </p>
 
                   <p
                     className="
-                      mt-2
-                      sm:mt-3
-                      break-words
-                      font-serif
-                      text-lg
-                      sm:text-2xl
+                      mt-2 break-words font-cursiveDancing
+                      text-2xl sm:mt-3 sm:text-3xl
                     "
-                    style={{ color: palette.ink }}
+                    style={{ color: colores.rosaFuerte }}
                   >
                     {invitados}
                   </p>
 
-                  <div
-                    className="
-                      mx-auto
-                      my-2
-                      sm:my-4
-                      h-px
-                      w-12
-                    "
-                    style={{
-                      backgroundColor: "rgba(164,134,84,0.6)",
-                    }}
-                  />
+                  <div className="my-2 text-lg sm:my-3">🌼</div>
 
-                  <p
-                    className="
-                      font-serif
-                      text-xs
-                      tracking-[0.08em]
-                      sm:text-base
-                    "
-                    style={{ color: palette.inkSoft }}
-                  >
-                    {pases}{" "}
-                    {pases === 1
-                      ? "lugar reservado"
-                      : "lugares reservados"}
+                  <p className="font-serif text-xs font-semibold sm:text-base">
+                    {pases} {pases === 1 ? "pase reservado" : "pases reservados"}
                   </p>
                 </motion.div>
               </motion.div>
@@ -1120,57 +513,25 @@ useEffect(() => {
         )}
       </AnimatePresence>
 
-      {/* =========================================
-          PORTADA PRINCIPAL
-      ========================================= */}
-
       <section
-        className="
-          relative
-          min-h-[100dvh]
-          w-full
-          overflow-hidden
-        "
-        style={{ backgroundColor: palette.ink }}
+        className="relative min-h-[100dvh] w-full overflow-hidden"
+        style={{ backgroundColor: colores.texto }}
       >
-        {/* FOTOGRAFÍA */}
-
         <motion.img
           src="/portada.png"
-          alt="Valeria y Alejandro"
-          className="
-            absolute
-            inset-0
-            h-full
-            w-full
-            object-cover
-            object-center
-          "
-          initial={{
-            opacity: 0,
-            scale: 1.035,
-          }}
+          alt="Aurora Analy"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          initial={{ opacity: 0, scale: 1.035 }}
           animate={
             mostrarContenido
-              ? {
-                  opacity: 1,
-                  scale: 1,
-                }
-              : {
-                  opacity: 0,
-                  scale: 1.035,
-                }
+              ? { opacity: 1, scale: 1 }
+              : { opacity: 0, scale: 1.035 }
           }
           transition={{
             opacity: { duration: 1.2 },
-            scale: {
-              duration: 7,
-              ease: "easeOut",
-            },
+            scale: { duration: 7, ease: "easeOut" },
           }}
         />
-
-        {/* OVERLAY CINEMATOGRÁFICO DISCRETO */}
 
         <motion.div
           className="absolute inset-0"
@@ -1178,337 +539,118 @@ useEffect(() => {
             background: `
               linear-gradient(
                 180deg,
-                rgba(18,24,31,0.46) 0%,
-                rgba(18,24,31,0.12) 32%,
-                rgba(18,24,31,0.20) 54%,
-                rgba(18,24,31,0.82) 100%
-              ),
-              linear-gradient(
-                90deg,
-                rgba(18,24,31,0.18) 0%,
-                transparent 35%,
-                transparent 65%,
-                rgba(18,24,31,0.18) 100%
+                rgba(77,33,49,0.15) 0%,
+                rgba(77,33,49,0.02) 38%,
+                rgba(77,33,49,0.12) 58%,
+                rgba(77,33,49,0.80) 100%
               )
             `,
           }}
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: mostrarContenido ? 1 : 0,
-          }}
+          animate={{ opacity: mostrarContenido ? 1 : 0 }}
           transition={{ duration: 1 }}
         />
 
-        {/* GRANO EDITORIAL */}
-
-        <div
+        <motion.div
           className="
-            pointer-events-none
-            absolute
-            inset-0
-            opacity-[0.07]
+            pointer-events-none absolute inset-4 z-10 border-2
+            sm:inset-7 lg:inset-9
           "
           style={{
-            backgroundImage: `
-              radial-gradient(
-                rgba(255,255,255,0.32) 0.5px,
-                transparent 0.5px
-              )
-            `,
-            backgroundSize: "5px 5px",
+            borderColor: "rgba(255,255,255,0.65)",
+            borderRadius: "44% 56% 45% 55% / 5% 7% 6% 8%",
           }}
+          animate={{ opacity: mostrarContenido ? 1 : 0 }}
+          transition={{ duration: 1, delay: 0.35 }}
         />
 
-        {/* MARCO */}
+        <Flor className="left-2 top-2 z-10 text-5xl sm:left-7 sm:top-7 sm:text-7xl" />
+        <Flor
+          rosa
+          delay={0.8}
+          className="right-2 top-6 z-10 text-4xl sm:right-7 sm:text-6xl"
+        />
 
         <motion.div
           className="
-            pointer-events-none
-            absolute
-            inset-4
-            z-10
-            border
-            sm:inset-7
-            lg:inset-9
+            relative z-20 flex min-h-[100dvh] w-full flex-col
+            items-center justify-end px-6 pb-10 pt-12 text-center
+            sm:px-12 sm:pb-16 lg:px-16
           "
-          style={{
-            borderColor: "rgba(245,241,232,0.34)",
-          }}
           initial={{ opacity: 0 }}
-          animate={{
-            opacity: mostrarContenido ? 1 : 0,
-          }}
-          transition={{
-            duration: 1,
-            delay: 0.35,
-          }}
-        />
-
-        {/* CONTENIDO */}
-
-        <motion.div
-          className="
-relative
-z-20
-flex
-min-h-[100dvh]
-w-full
-flex-col
-items-center
-justify-start
-px-5
-pt-8
-pb-5
-text-center
-sm:px-12
-sm:pt-16
-lg:px-16
-lg:pt-20
-"
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: mostrarContenido ? 1 : 0,
-          }}
-          transition={{
-            duration: 1,
-            delay: 0.2,
-          }}
+          animate={{ opacity: mostrarContenido ? 1 : 0 }}
+          transition={{ duration: 1, delay: 0.2 }}
         >
-          {/* ENCABEZADO */}
-
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={
-              mostrarContenido
-                ? {
-                    opacity: 1,
-                    y: 0,
-                  }
-                : {
-                    opacity: 0,
-                    y: -12,
-                  }
-            }
-            transition={{
-              ...transition,
-              delay: 0.5,
-            }}
-          >
-           
-            <div
-              className="
-                mx-auto
-                mt-2
-                sm:mt-4
-                h-px
-                w-14
-              "
-              style={{
-                backgroundColor: "rgba(245,241,232,0.7)",
-              }}
-            />
-
-
-          </motion.div>
-
-          {/* NOMBRES */}
-
           <motion.div
             className="
-              flex
-              max-w-4xl
-              flex-col
-              items-center
-              
+              w-full max-w-2xl rounded-[42px] border border-white/60
+              bg-[#A93E67]/20 px-5 py-7 backdrop-blur-[2px]
+              sm:px-10 sm:py-9
             "
             initial={{ opacity: 0, y: 24 }}
             animate={
               mostrarContenido
-                ? {
-                    opacity: 1,
-                    y: 0,
-                  }
-                : {
-                    opacity: 0,
-                    y: 24,
-                  }
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 24 }
             }
-            transition={{
-              duration: 1.1,
-              delay: 0.65,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+            transition={{ ...transicion, delay: 0.55 }}
           >
-
-
+  
+   
             <h1
               className="
-                font-serif
-                text-[40px]
-                font-normal
-                leading-[0.9]
-                tracking-[-0.035em]
-                text-[#FBF9F4]
-                sm:text-[72px]
-                md:text-[88px]
-                lg:text-[104px]
+                mt-3 font-cursiveDancing text-[52px] font-normal
+                leading-[0.82] text-white sm:text-[82px] lg:text-[96px]
               "
-              style={{
-                textShadow: "0 4px 24px rgba(0,0,0,0.32)",
-              }}
+              style={{ textShadow: "0 4px 24px rgba(75,27,43,0.35)" }}
             >
-              Valeria
+              Aurora Analy
             </h1>
 
-            <div className="my-2 flex items-center gap-3 sm:my-4 sm:gap-6">
-              <span
-                className="
-                  h-px
-                  w-12
-                  sm:w-20
-                "
-                style={{
-                  background:
-                    "linear-gradient(to right, transparent, rgba(216,198,166,0.8))",
-                }}
-              />
+            <div className="my-4">
+              <Separador />
+            </div>
 
-              <span
-                className="
-                  font-cursiveDancing
-                  text-2xl
-                  text-[#D8C6A6]
-                  sm:text-4xl
-                "
-              >
-                &
-              </span>
+            <p
+              className="
+                font-serif text-sm font-semibold uppercase
+                tracking-[0.2em] text-white sm:text-base
+              "
+            >
+              10 · Octubre · 2026
+            </p>
 
-              <span
-                className="
-                  h-px
-                  w-12
-                  sm:w-20
-                "
-                style={{
-                  background:
-                    "linear-gradient(to left, transparent, rgba(216,198,166,0.8))",
+            <p className="mt-3 font-serif text-sm italic text-white/90 sm:text-base">
+              Acompáñame a festejar mi primer añito
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="mt-5 flex flex-col items-center sm:mt-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: mostrarContenido ? 1 : 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            <p
+              className="
+                text-[9px] font-semibold uppercase
+                tracking-[0.32em] text-white/80
+              "
+            >
+              Desliza para continuar
+            </p>
+
+            <div className="mt-3 h-8 w-px overflow-hidden bg-white/30">
+              <motion.span
+                className="block h-4 w-px bg-white"
+                animate={{ y: [-16, 36] }}
+                transition={{
+                  duration: 1.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  repeatDelay: 0.25,
                 }}
               />
             </div>
-
-            <h1
-              className="
-                font-serif
-                text-[40px]
-                font-normal
-                leading-[0.9]
-                tracking-[-0.035em]
-                text-[#FBF9F4]
-                sm:text-[72px]
-                md:text-[88px]
-                lg:text-[104px]
-              "
-              style={{
-                textShadow: "0 4px 24px rgba(0,0,0,0.32)",
-              }}
-            >
-              Alejandro
-            </h1>
-
-          </motion.div>
-
-          {/* CONTADOR */}
-
-          <motion.div
-            className="
-              w-full
-              max-w-4xl
-              mt-auto
-              pt-3
-              pb-1
-              sm:pt-6
-              sm:pb-4
-            "
-            initial={{ opacity: 0, y: 18 }}
-            animate={
-              mostrarContenido
-                ? {
-                    opacity: 1,
-                    y: 0,
-                  }
-                : {
-                    opacity: 0,
-                    y: 18,
-                  }
-            }
-            transition={{
-              duration: 1,
-              delay: 0.9,
-            }}
-          >
-
-            <Countdown targetDate="2027-06-11T00:00:00" />
-
-            <motion.div
-              className="
-                mt-4
-                flex
-                flex-col
-                items-center
-                sm:mt-10
-              "
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: mostrarContenido ? 1 : 0,
-              }}
-              transition={{
-                duration: 1,
-                delay: 1.1,
-              }}
-            >
-              <p
-                className="
-                  text-[8px]
-                  uppercase
-                  tracking-[0.38em]
-                  text-[#F5F1E8]/65
-                  sm:text-[9px]
-                "
-              >
-                Desliza para continuar
-              </p>
-
-              <div
-                className="
-                  mt-2
-                  sm:mt-4
-                  h-6
-                  sm:h-9
-                  w-px
-                  overflow-hidden
-                  bg-[#F5F1E8]/25
-                "
-              >
-                <motion.span
-                  className="
-                    block
-                    h-4
-                    w-px
-                    bg-[#F5F1E8]/80
-                  "
-                  animate={{
-                    y: [-16, 36],
-                  }}
-                  transition={{
-                    duration: 1.8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    repeatDelay: 0.25,
-                  }}
-                />
-              </div>
-            </motion.div>
           </motion.div>
         </motion.div>
       </section>

@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ItinerarioRelojCentral from "./componentes-encabezado/Itinerario";
-import Preguntas from "./componentes-encabezado/Preguntas";
 import Regalos from "./componentes-encabezado/Regalos";
 import Confirmacion from "./componentes-encabezado/Confirmacion";
-import FrasePremium from "./componentes-encabezado/FrasePrincipal";
 import EventoDireccion from "./componentes-encabezado/Ubicacion";
-import DressCodePremium from "./componentes-encabezado/codigovestimenta";
 import Galeria from "./componentes-encabezado/Galeria";
-import FraseModal from "./componentes-encabezado/Fraseintermedia";
-import Album from "./componentes-encabezado/albun";
+
 
 
 export default function PaginaPrincipal() {
@@ -47,21 +42,12 @@ export default function PaginaPrincipal() {
   return (
     <div >
 
-<FrasePremium/>
+
 
 <EventoDireccion/>
 
 <Galeria/>
 
-<ItinerarioRelojCentral/>
-  
-<FraseModal/> 
-
-<DressCodePremium/>
-
-<Album/>
-
-<Preguntas/>
 
 <Regalos/>
 

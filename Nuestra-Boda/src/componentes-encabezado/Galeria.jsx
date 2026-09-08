@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-/* =========================================
-   GALERÍA EDITORIAL CLÁSICA
-========================================= */
-
-const palette = {
-  ink: "#1D2733",
-  inkSoft: "#39434D",
-  paper: "#F5F1E8",
-  paperLight: "#FBF9F4",
-  paperDark: "#E4DDD1",
-  antiqueGold: "#A48654",
-  antiqueGoldDark: "#725B37",
-  warmGray: "#777168",
+const colores = {
+  rosa: "#F277A2",
+  rosaFuerte: "#D94F82",
+  rosaClaro: "#FFDCE8",
+  rosaFondo: "#FFF1F6",
+  crema: "#FFF9ED",
+  amarillo: "#F5C44D",
+  amarilloClaro: "#FFF0B5",
+  verde: "#7FA35D",
+  texto: "#67444D",
+  textoSuave: "#906F78",
+  blanco: "#FFFFFF",
 };
 
 const images = [
@@ -25,165 +24,152 @@ const images = [
 ];
 
 const fadeUp = {
-  hidden: {
-    opacity: 0,
-    y: 28,
-  },
+  hidden: { opacity: 0, y: 28 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.95,
+      duration: 0.9,
       ease: [0.22, 1, 0.36, 1],
     },
   },
 };
 
-/* =========================================
-   ORNAMENTO DE ESQUINA
-========================================= */
-
-function CornerOrnament({ className = "" }) {
+function FlorRosaSuperior({ className = "", delay = 0 }) {
   return (
-    <svg
-      viewBox="0 0 90 90"
+    <motion.svg
+      viewBox="0 0 150 150"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`pointer-events-none absolute ${className}`}
+      animate={{ y: [0, -7, 0], rotate: [-3, 3, -3] }}
+      transition={{
+        duration: 4,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
     >
-      <path
-        d="M5 85V30C5 16.2 16.2 5 30 5h55"
-        stroke="currentColor"
-        strokeWidth="1"
+      <ellipse cx="75" cy="39" rx="23" ry="39" fill="#F5A2BC" />
+      <ellipse
+        cx="75"
+        cy="39"
+        rx="23"
+        ry="39"
+        fill="#F8B5C9"
+        transform="rotate(60 75 75)"
       />
-
-      <path
-        d="M15 72V34c0-10.5 8.5-19 19-19h38"
-        stroke="currentColor"
-        strokeWidth="0.65"
+      <ellipse
+        cx="75"
+        cy="39"
+        rx="23"
+        ry="39"
+        fill="#F28EAD"
+        transform="rotate(120 75 75)"
       />
-
-      <path
-        d="M30 5C30 18.8 18.8 30 5 30"
-        stroke="currentColor"
-        strokeWidth="0.75"
+      <ellipse
+        cx="75"
+        cy="39"
+        rx="23"
+        ry="39"
+        fill="#F7ADC4"
+        transform="rotate(180 75 75)"
       />
-
-      <circle cx="15" cy="15" r="2" fill="currentColor" />
-    </svg>
+      <ellipse
+        cx="75"
+        cy="39"
+        rx="23"
+        ry="39"
+        fill="#F08AAA"
+        transform="rotate(240 75 75)"
+      />
+      <ellipse
+        cx="75"
+        cy="39"
+        rx="23"
+        ry="39"
+        fill="#F9B8CB"
+        transform="rotate(300 75 75)"
+      />
+      <circle cx="75" cy="75" r="24" fill="#F5C44D" />
+      <circle cx="67" cy="67" r="6" fill="#FFE58A" />
+    </motion.svg>
   );
 }
 
-/* =========================================
-   RAMA BOTÁNICA
-========================================= */
-
-function BotanicalBranch({ className = "" }) {
+function FlorRosaConTallo({ className = "", mirror = false }) {
   return (
-    <svg
-      viewBox="0 0 150 260"
+    <motion.svg
+      viewBox="0 0 190 300"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`pointer-events-none absolute ${className}`}
+      style={{ transform: mirror ? "scaleX(-1)" : undefined }}
+      initial={{ opacity: 0, y: 25 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
     >
       <path
-        d="M76 252C80 192 78 130 71 12"
-        stroke="currentColor"
-        strokeWidth="1"
+        d="M95 290C92 236 97 186 100 126"
+        stroke="#719653"
+        strokeWidth="8"
         strokeLinecap="round"
       />
-
       <path
-        d="M76 205C54 192 41 174 35 151"
-        stroke="currentColor"
-        strokeWidth="0.8"
-        strokeLinecap="round"
+        d="M94 235C65 220 48 197 45 169C72 177 90 198 94 235Z"
+        fill="#8EAA68"
+      />
+      <path
+        d="M97 204C122 189 139 166 143 141C118 148 101 168 97 204Z"
+        fill="#769B58"
+      />
+      <path
+        d="M93 261C72 252 58 238 53 220C73 223 88 240 93 261Z"
+        fill="#A3BB7D"
       />
 
-      <path
-        d="M75 167C97 153 109 133 113 109"
-        stroke="currentColor"
-        strokeWidth="0.8"
-        strokeLinecap="round"
+      <ellipse cx="100" cy="67" rx="25" ry="52" fill="#F7AEC4" />
+      <ellipse
+        cx="100"
+        cy="67"
+        rx="25"
+        ry="52"
+        fill="#F49BB8"
+        transform="rotate(45 100 67)"
       />
-
-      <path
-        d="M73 123C53 110 43 93 39 72"
-        stroke="currentColor"
-        strokeWidth="0.8"
-        strokeLinecap="round"
+      <ellipse
+        cx="100"
+        cy="67"
+        rx="25"
+        ry="52"
+        fill="#F8B5C9"
+        transform="rotate(90 100 67)"
       />
-
-      <path
-        d="M72 83C91 71 101 53 103 34"
-        stroke="currentColor"
-        strokeWidth="0.8"
-        strokeLinecap="round"
+      <ellipse
+        cx="100"
+        cy="67"
+        rx="25"
+        ry="52"
+        fill="#F28EAD"
+        transform="rotate(135 100 67)"
       />
-
-      <path
-        d="M35 151C49 150 60 158 67 173C52 172 41 165 35 151Z"
-        stroke="currentColor"
-        strokeWidth="0.7"
-      />
-
-      <path
-        d="M113 109C99 109 88 117 80 132C96 131 107 123 113 109Z"
-        stroke="currentColor"
-        strokeWidth="0.7"
-      />
-
-      <path
-        d="M39 72C53 73 63 81 69 95C54 94 44 86 39 72Z"
-        stroke="currentColor"
-        strokeWidth="0.7"
-      />
-
-      <path
-        d="M103 34C90 35 80 42 74 55C88 54 98 47 103 34Z"
-        stroke="currentColor"
-        strokeWidth="0.7"
-      />
-    </svg>
+      <circle cx="100" cy="67" r="31" fill="#F5C44D" />
+      <circle cx="90" cy="57" r="8" fill="#FFE58A" />
+      <circle cx="111" cy="74" r="5" fill="#E7A92D" opacity="0.65" />
+    </motion.svg>
   );
 }
 
-/* =========================================
-   SEPARADOR
-========================================= */
-
-function DecorativeDivider() {
+function SeparadorFloral() {
   return (
-    <div className="flex items-center justify-center gap-3">
-      <span
-        className="h-px w-10 sm:w-16"
-        style={{
-          background:
-            "linear-gradient(to right, transparent, rgba(164,134,84,0.72))",
-        }}
-      />
-
-      <span
-        className="h-[5px] w-[5px] rotate-45 border"
-        style={{
-          borderColor: "rgba(164,134,84,0.72)",
-        }}
-      />
-
-      <span
-        className="h-px w-10 sm:w-16"
-        style={{
-          background:
-            "linear-gradient(to left, transparent, rgba(164,134,84,0.72))",
-        }}
-      />
+    <div className="flex items-center justify-center gap-3" aria-hidden="true">
+      <span className="h-px w-10 bg-gradient-to-r from-transparent to-[#F5C44D] sm:w-16" />
+      <span className="text-xl">🌼</span>
+      <span className="h-px w-10 bg-gradient-to-l from-transparent to-[#F5C44D] sm:w-16" />
     </div>
   );
 }
-
-/* =========================================
-   ICONOS
-========================================= */
 
 function PreviousIcon() {
   return (
@@ -191,7 +177,7 @@ function PreviousIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.35"
+      strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -208,7 +194,7 @@ function NextIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.35"
+      strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -219,10 +205,6 @@ function NextIcon() {
   );
 }
 
-/* =========================================
-   COMPONENTE
-========================================= */
-
 export default function Galeria() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -231,14 +213,18 @@ export default function Galeria() {
   const totalImages = images.length;
 
   useEffect(() => {
+    images.forEach((src) => {
+      const image = new Image();
+      image.src = src;
+    });
+  }, []);
+
+  useEffect(() => {
     if (isPaused) return undefined;
 
     const intervalId = window.setInterval(() => {
       setDirection(1);
-
-      setIndex((previousIndex) => {
-        return (previousIndex + 1) % totalImages;
-      });
+      setIndex((previousIndex) => (previousIndex + 1) % totalImages);
     }, 4500);
 
     return () => window.clearInterval(intervalId);
@@ -246,20 +232,14 @@ export default function Galeria() {
 
   const nextImage = () => {
     setDirection(1);
-
-    setIndex((previousIndex) => {
-      return (previousIndex + 1) % totalImages;
-    });
+    setIndex((previousIndex) => (previousIndex + 1) % totalImages);
   };
 
   const previousImage = () => {
     setDirection(-1);
-
-    setIndex((previousIndex) => {
-      return previousIndex === 0
-        ? totalImages - 1
-        : previousIndex - 1;
-    });
+    setIndex((previousIndex) =>
+      previousIndex === 0 ? totalImages - 1 : previousIndex - 1
+    );
   };
 
   const goToImage = (imageIndex) => {
@@ -272,384 +252,161 @@ export default function Galeria() {
       variants={fadeUp}
       initial="hidden"
       whileInView="show"
-      viewport={{
-        once: true,
-        amount: 0.12,
-      }}
+      viewport={{ once: true, amount: 0.12 }}
       className="
-        relative
-        w-full
-        overflow-hidden
-        px-5
-        py-24
-        sm:px-8
-        sm:py-28
-        lg:px-12
-        lg:py-32
+        relative w-full overflow-hidden px-5 py-24
+        sm:px-8 sm:py-28 lg:px-12 lg:py-32
       "
-      style={{
-        background: `
-          linear-gradient(
-            180deg,
-            ${palette.paperLight} 0%,
-            ${palette.paper} 55%,
-            ${palette.paperDark} 100%
-          )
-        `,
-      }}
+      style={{ backgroundColor: colores.rosaFondo }}
     >
-      {/* TEXTURA DE PAPEL */}
+      {/* DOS FLORES ROSAS SUPERIORES */}
 
-      <div
+      <FlorRosaSuperior
         className="
-          pointer-events-none
-          absolute
-          inset-0
-          opacity-[0.16]
+          -left-6 -top-5 h-32 w-32
+          sm:-left-4 sm:-top-4 sm:h-44 sm:w-44
+          lg:left-3 lg:h-48 lg:w-48
         "
-        style={{
-          backgroundImage: `
-            repeating-linear-gradient(
-              0deg,
-              rgba(29,39,51,0.025) 0px,
-              rgba(29,39,51,0.025) 1px,
-              transparent 1px,
-              transparent 5px
-            )
-          `,
-        }}
       />
 
-      {/* MARCO GENERAL */}
+      <FlorRosaSuperior
+        delay={0.8}
+        className="
+          -right-6 -top-5 h-32 w-32
+          sm:-right-4 sm:-top-4 sm:h-44 sm:w-44
+          lg:right-3 lg:h-48 lg:w-48
+        "
+      />
+
+      {/* MARCOS ONDULADOS */}
 
       <div
-        className="
-          pointer-events-none
-          absolute
-          inset-5
-          border
-          sm:inset-8
-          lg:inset-10
-        "
+        className="pointer-events-none absolute inset-4 border-2 sm:inset-7 lg:inset-9"
         style={{
-          borderColor: "rgba(164,134,84,0.25)",
+          borderColor: "rgba(242,119,162,0.48)",
+          borderRadius: "46% 54% 48% 52% / 5% 7% 6% 8%",
         }}
       />
 
       <div
         className="
-          pointer-events-none
-          absolute
-          inset-[26px]
-          border
-          sm:inset-[38px]
-          lg:inset-[46px]
+          pointer-events-none absolute inset-[22px]
+          border border-dashed sm:inset-[36px] lg:inset-[44px]
         "
         style={{
-          borderColor: "rgba(164,134,84,0.1)",
+          borderColor: "rgba(245,196,77,0.72)",
+          borderRadius: "54% 46% 53% 47% / 7% 5% 8% 6%",
         }}
       />
 
-      {/* ORNAMENTOS */}
-
-      <CornerOrnament
-        className="
-          pointer-events-none
-          absolute
-          left-6
-          top-6
-          h-16
-          w-16
-          text-[#A48654]/25
-          sm:left-9
-          sm:top-9
-          sm:h-20
-          sm:w-20
-        "
-      />
-
-      <CornerOrnament
-        className="
-          pointer-events-none
-          absolute
-          right-6
-          top-6
-          h-16
-          w-16
-          rotate-90
-          text-[#A48654]/25
-          sm:right-9
-          sm:top-9
-          sm:h-20
-          sm:w-20
-        "
-      />
-
-      <CornerOrnament
-        className="
-          pointer-events-none
-          absolute
-          bottom-6
-          left-6
-          h-16
-          w-16
-          -rotate-90
-          text-[#A48654]/25
-          sm:bottom-9
-          sm:left-9
-          sm:h-20
-          sm:w-20
-        "
-      />
-
-      <CornerOrnament
-        className="
-          pointer-events-none
-          absolute
-          bottom-6
-          right-6
-          h-16
-          w-16
-          rotate-180
-          text-[#A48654]/25
-          sm:bottom-9
-          sm:right-9
-          sm:h-20
-          sm:w-20
-        "
-      />
-
-      <BotanicalBranch
-        className="
-          pointer-events-none
-          absolute
-          -bottom-16
-          -left-8
-          h-[250px]
-          w-[145px]
-          -rotate-12
-          text-[#A48654]/10
-          sm:h-[310px]
-          sm:w-[180px]
-          lg:left-2
-        "
-      />
-
-      <BotanicalBranch
-        className="
-          pointer-events-none
-          absolute
-          -right-8
-          -top-16
-          h-[250px]
-          w-[145px]
-          rotate-[168deg]
-          text-[#A48654]/10
-          sm:h-[310px]
-          sm:w-[180px]
-          lg:right-2
-        "
-      />
-
-      <div
-        className="
-          relative
-          z-10
-          mx-auto
-          w-full
-          max-w-7xl
-        "
-      >
-        {/* ENCABEZADO */}
-
+      <div className="relative z-10 mx-auto w-full max-w-6xl">
         <motion.div
           className="
-            mx-auto
-            mb-14
-            flex
-            max-w-3xl
-            flex-col
-            items-center
-            text-center
-            sm:mb-16
-            lg:mb-20
+            mx-auto mb-10 flex max-w-3xl flex-col
+            items-center text-center sm:mb-14 lg:mb-16
           "
-          initial={{
-            opacity: 0,
-            y: 18,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{
-            duration: 0.9,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+          transition={{ duration: 0.9 }}
         >
           <p
             className="
-              text-[8px]
-              uppercase
-              tracking-[0.44em]
-              sm:text-[10px]
-              sm:tracking-[0.55em]
+              text-[9px] font-bold uppercase tracking-[0.38em]
+              sm:text-[11px]
             "
-            style={{
-              color: palette.antiqueGoldDark,
-            }}
+            style={{ color: colores.rosaFuerte }}
           >
-            Nuestros momentos
+            Sus momentos más bonitos
           </p>
-
-          <div className="mt-5">
-            <DecorativeDivider />
-          </div>
 
           <h2
             className="
-              mt-7
-              font-serif
-              text-[40px]
-              font-normal
-              leading-tight
-              tracking-[-0.025em]
-              sm:text-[54px]
-              md:text-[64px]
+              mt-4 font-cursiveDancing text-[54px]
+              font-normal leading-none sm:text-[74px]
             "
-            style={{
-              color: palette.ink,
-            }}
+            style={{ color: colores.rosaFuerte }}
           >
-            Nuestra historia
+            Galería de Aurora
           </h2>
+
+          <div className="mt-5">
+            <SeparadorFloral />
+          </div>
 
           <p
             className="
-              mx-auto
-              mt-5
-              max-w-2xl
-              font-serif
-              text-[14px]
-              italic
-              leading-7
-              sm:text-base
+              mx-auto mt-5 max-w-xl font-serif
+              text-sm italic leading-7 sm:text-base
             "
-            style={{
-              color: palette.warmGray,
-            }}
+            style={{ color: colores.textoSuave }}
           >
-            Un recorrido por los instantes que han dado forma a nuestra
-            historia y que hoy nos conducen hasta este día.
+            Un pedacito de este primer año lleno de sonrisas,
+            descubrimientos y mucho amor.
           </p>
         </motion.div>
 
-        {/* ÁLBUM PRINCIPAL */}
-
         <motion.div
-          className="
-            relative
-            mx-auto
-            w-full
-            max-w-6xl
-          "
-          initial={{
-            opacity: 0,
-            y: 24,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.12,
-          }}
-          transition={{
-            duration: 1,
-            delay: 0.12,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+          className="relative mx-auto w-full max-w-5xl"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 1, delay: 0.12 }}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
         >
-          {/* MARCO DE PAPEL */}
-
           <div
             className="
-              relative
-              border
-              p-3
-              sm:p-5
-              lg:p-7
+              relative border-2 bg-white p-3
+              sm:p-5 lg:p-7
             "
             style={{
-              backgroundColor: palette.paperLight,
-              borderColor: "rgba(164,134,84,0.34)",
-              boxShadow: "0 24px 65px rgba(29,39,51,0.1)",
+              borderColor: colores.rosaClaro,
+              borderRadius: "48px 48px 28px 28px",
+              boxShadow: "0 24px 65px rgba(201,83,125,0.15)",
             }}
           >
-            {/* BORDE INTERIOR */}
-
             <div
-              className="
-                pointer-events-none
-                absolute
-                inset-[7px]
-                border
-              "
+              className="pointer-events-none absolute inset-[7px] border border-dashed"
               style={{
-                borderColor: "rgba(164,134,84,0.12)",
+                borderColor: "rgba(245,196,77,0.72)",
+                borderRadius: "40px 40px 22px 22px",
               }}
             />
 
-            {/* FOTOGRAFÍA */}
-
             <div
               className="
-                relative
-                h-[390px]
-                overflow-hidden
-                bg-[#E4DDD1]
-                sm:h-[540px]
-                md:h-[620px]
-                lg:h-[680px]
+                relative h-[390px] overflow-hidden
+                bg-[#FFDCE8] sm:h-[540px]
+                md:h-[620px] lg:h-[680px]
               "
+              style={{ borderRadius: "36px 36px 18px 18px" }}
             >
               <AnimatePresence custom={direction} mode="wait">
                 <motion.img
                   key={images[index]}
                   custom={direction}
                   src={images[index]}
-                  alt={`Momento ${index + 1} de ${totalImages}`}
+                  alt={`Fotografía ${index + 1} de Aurora`}
                   className="
-                    absolute
-                    inset-0
-                    h-full
-                    w-full
-                    object-cover
-                    object-center
+                    absolute inset-0 h-full w-full
+                    object-cover object-center
                   "
                   initial={{
                     opacity: 0,
                     scale: 1.025,
                     x: direction > 0 ? 18 : -18,
                   }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    x: 0,
-                  }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
                   exit={{
                     opacity: 0,
                     scale: 1.012,
                     x: direction > 0 ? -16 : 16,
                   }}
                   transition={{
-                    opacity: {
-                      duration: 0.65,
-                    },
+                    opacity: { duration: 0.65 },
                     scale: {
                       duration: 1.2,
                       ease: [0.22, 1, 0.36, 1],
@@ -662,260 +419,107 @@ export default function Galeria() {
                 />
               </AnimatePresence>
 
-              {/* OVERLAY MUY DISCRETO */}
-
               <div
-                className="
-                  pointer-events-none
-                  absolute
-                  inset-0
-                "
+                className="pointer-events-none absolute inset-0"
                 style={{
-                  background: `
-                    linear-gradient(
-                      180deg,
-                      transparent 55%,
-                      rgba(20,27,34,0.22) 100%
-                    )
-                  `,
+                  background:
+                    "linear-gradient(180deg, transparent 62%, rgba(91,47,61,0.24) 100%)",
                 }}
               />
 
-              {/* NUMERACIÓN */}
-
               <div
                 className="
-                  absolute
-                  bottom-4
-                  left-4
-                  z-20
-                  border
-                  bg-[#FBF9F4]/90
-                  px-4
-                  py-2
+                  absolute bottom-4 left-1/2 z-20
+                  -translate-x-1/2 rounded-full
+                  border bg-white/90 px-5 py-2 backdrop-blur-sm
                   sm:bottom-6
-                  sm:left-6
                 "
                 style={{
-                  borderColor: "rgba(164,134,84,0.34)",
+                  borderColor: colores.rosaClaro,
+                  color: colores.rosaFuerte,
                 }}
               >
-                <p
-                  className="
-                    text-[8px]
-                    uppercase
-                    tracking-[0.3em]
-                    sm:text-[9px]
-                  "
-                  style={{
-                    color: palette.inkSoft,
-                  }}
-                >
-                  Fotografía {String(index + 1).padStart(2, "0")}
+                <p className="text-[9px] font-bold uppercase tracking-[0.24em]">
+                  {String(index + 1).padStart(2, "0")} /{" "}
+                  {String(totalImages).padStart(2, "0")}
                 </p>
               </div>
-
-              {/* BOTÓN ANTERIOR */}
-
-              <motion.button
-                type="button"
-                onClick={previousImage}
-                aria-label="Mostrar fotografía anterior"
-                className="
-                  absolute
-                  left-3
-                  top-1/2
-                  z-30
-                  flex
-                  h-11
-                  w-11
-                  -translate-y-1/2
-                  items-center
-                  justify-center
-                  border
-                  bg-[#FBF9F4]/92
-                  sm:left-5
-                  sm:h-12
-                  sm:w-12
-                "
-                style={{
-                  borderColor: "rgba(164,134,84,0.4)",
-                  color: palette.ink,
-                  boxShadow: "0 8px 20px rgba(29,39,51,0.08)",
-                }}
-                whileHover={{
-                  y: "-50%",
-                  scale: 1.04,
-                  backgroundColor: palette.paperLight,
-                }}
-                whileTap={{
-                  scale: 0.97,
-                }}
-              >
-                <PreviousIcon />
-              </motion.button>
-
-              {/* BOTÓN SIGUIENTE */}
-
-              <motion.button
-                type="button"
-                onClick={nextImage}
-                aria-label="Mostrar siguiente fotografía"
-                className="
-                  absolute
-                  right-3
-                  top-1/2
-                  z-30
-                  flex
-                  h-11
-                  w-11
-                  -translate-y-1/2
-                  items-center
-                  justify-center
-                  border
-                  bg-[#FBF9F4]/92
-                  sm:right-5
-                  sm:h-12
-                  sm:w-12
-                "
-                style={{
-                  borderColor: "rgba(164,134,84,0.4)",
-                  color: palette.ink,
-                  boxShadow: "0 8px 20px rgba(29,39,51,0.08)",
-                }}
-                whileHover={{
-                  y: "-50%",
-                  scale: 1.04,
-                  backgroundColor: palette.paperLight,
-                }}
-                whileTap={{
-                  scale: 0.97,
-                }}
-              >
-                <NextIcon />
-              </motion.button>
             </div>
 
-            {/* PIE DE FOTO */}
-
-            <div
-              className="
-                relative
-                flex
-                flex-col
-                items-center
-                px-4
-                pb-3
-                pt-7
-                text-center
-                sm:px-8
-                sm:pb-5
-                sm:pt-9
-              "
-            >
-              <motion.p
-                key={`counter-${index}`}
-                className="
-                  font-serif
-                  text-[22px]
-                  sm:text-[26px]
-                "
-                style={{
-                  color: palette.ink,
-                }}
-                initial={{
-                  opacity: 0,
-                  y: 6,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
-              >
-                {String(index + 1).padStart(2, "0")}
-                <span
+            <div className="relative flex flex-col items-center px-4 pb-4 pt-7">
+              <div className="flex items-center justify-center gap-5">
+                <motion.button
+                  type="button"
+                  onClick={previousImage}
+                  aria-label="Mostrar fotografía anterior"
                   className="
-                    mx-2
-                    text-sm
+                    flex h-12 w-12 items-center justify-center
+                    rounded-full border-2 bg-white
                   "
                   style={{
-                    color: palette.warmGray,
+                    borderColor: colores.rosaClaro,
+                    color: colores.rosaFuerte,
+                    boxShadow: "0 8px 20px rgba(201,83,125,0.12)",
                   }}
+                  whileHover={{ y: -2, scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                 >
-                  /
-                </span>
-                <span
+                  <PreviousIcon />
+                </motion.button>
+
+                <div className="flex items-center justify-center gap-2">
+                  {images.map((_, imageIndex) => {
+                    const isActive = index === imageIndex;
+
+                    return (
+                      <motion.button
+                        key={`indicator-${imageIndex}`}
+                        type="button"
+                        onClick={() => goToImage(imageIndex)}
+                        aria-label={`Mostrar fotografía ${imageIndex + 1}`}
+                        aria-current={isActive ? "true" : undefined}
+                        className="h-2 rounded-full border"
+                        animate={{ width: isActive ? 30 : 8 }}
+                        transition={{ duration: 0.35 }}
+                        style={{
+                          backgroundColor: isActive
+                            ? colores.rosa
+                            : colores.blanco,
+                          borderColor: isActive
+                            ? colores.rosa
+                            : colores.rosaClaro,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+
+                <motion.button
+                  type="button"
+                  onClick={nextImage}
+                  aria-label="Mostrar siguiente fotografía"
                   className="
-                    text-base
-                    sm:text-lg
+                    flex h-12 w-12 items-center justify-center
+                    rounded-full border-2 bg-white
                   "
                   style={{
-                    color: palette.warmGray,
+                    borderColor: colores.rosaClaro,
+                    color: colores.rosaFuerte,
+                    boxShadow: "0 8px 20px rgba(201,83,125,0.12)",
                   }}
+                  whileHover={{ y: -2, scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                 >
-                  {String(totalImages).padStart(2, "0")}
-                </span>
-              </motion.p>
-
-              {/* INDICADORES */}
-
-              <div
-                className="
-                  mt-5
-                  flex
-                  items-center
-                  justify-center
-                  gap-3
-                "
-              >
-                {images.map((_, imageIndex) => {
-                  const isActive = index === imageIndex;
-
-                  return (
-                    <motion.button
-                      key={`indicator-${imageIndex}`}
-                      type="button"
-                      onClick={() => goToImage(imageIndex)}
-                      aria-label={`Mostrar fotografía ${imageIndex + 1}`}
-                      aria-current={isActive ? "true" : undefined}
-                      className="
-                        h-[7px]
-                        border
-                      "
-                      animate={{
-                        width: isActive ? 32 : 7,
-                      }}
-                      transition={{
-                        duration: 0.4,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      style={{
-                        backgroundColor: isActive
-                          ? palette.ink
-                          : "transparent",
-                        borderColor: isActive
-                          ? palette.ink
-                          : "rgba(164,134,84,0.45)",
-                      }}
-                    />
-                  );
-                })}
+                  <NextIcon />
+                </motion.button>
               </div>
 
               <p
                 className="
-                  mt-5
-                  text-[8px]
-                  uppercase
-                  tracking-[0.32em]
-                  sm:text-[9px]
+                  mt-5 text-[9px] font-semibold
+                  uppercase tracking-[0.27em]
                 "
-                style={{
-                  color: palette.warmGray,
-                }}
+                style={{ color: colores.textoSuave }}
               >
                 La galería avanza automáticamente
               </p>
@@ -923,59 +527,42 @@ export default function Galeria() {
           </div>
         </motion.div>
 
-        {/* CIERRE NARRATIVO */}
-
-        <motion.div
+        <motion.p
           className="
-            mx-auto
-            mt-12
-            max-w-xl
-            text-center
-            sm:mt-14
+            mx-auto mt-10 max-w-xl text-center
+            font-cursiveDancing text-3xl
+            leading-relaxed sm:mt-14 sm:text-4xl
           "
-          initial={{
-            opacity: 0,
-            y: 12,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
+          style={{ color: colores.rosaFuerte }}
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{
-            duration: 0.9,
-            delay: 0.35,
-          }}
+          transition={{ duration: 0.9, delay: 0.3 }}
         >
-          <div
-            className="
-              mx-auto
-              mb-6
-              h-px
-              w-16
-            "
-            style={{
-              backgroundColor: "rgba(164,134,84,0.48)",
-            }}
-          />
-
-          <p
-            className="
-              font-serif
-              text-[14px]
-              italic
-              leading-7
-              sm:text-base
-            "
-            style={{
-              color: palette.warmGray,
-            }}
-          >
-            Cada fotografía guarda un instante de nuestro camino y una parte
-            de la historia que hoy celebramos.
-          </p>
-        </motion.div>
+          Un año de recuerdos para guardar por siempre
+        </motion.p>
       </div>
+
+      {/* DOS FLORES INFERIORES CON TALLO */}
+
+      <FlorRosaConTallo
+        className="
+          -bottom-12 -left-12 z-[5]
+          h-[245px] w-[160px]
+          sm:-bottom-14 sm:-left-7 sm:h-[325px] sm:w-[210px]
+          lg:left-0 lg:h-[360px] lg:w-[235px]
+        "
+      />
+
+      <FlorRosaConTallo
+        mirror
+        className="
+          -bottom-12 -right-12 z-[5]
+          h-[245px] w-[160px]
+          sm:-bottom-14 sm:-right-7 sm:h-[325px] sm:w-[210px]
+          lg:right-0 lg:h-[360px] lg:w-[235px]
+        "
+      />
     </motion.section>
   );
 }
