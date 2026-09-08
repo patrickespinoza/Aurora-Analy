@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbxdeU5Oi1fr3D_zA_J95JiIXBT40BaXKSoJolU3We0AObSwExDzUa48aK7PuPDoYdKJQg/exec";
@@ -31,56 +31,6 @@ const fadeUp = {
     },
   },
 };
-
-function normalizeBase64(value) {
-  const normalized = value
-    .trim()
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
-
-  const remainder = normalized.length % 4;
-  return remainder === 0
-    ? normalized
-    : normalized + "=".repeat(4 - remainder);
-}
-
-function decodeBase64Utf8(value) {
-  const binary = window.atob(normalizeBase64(value));
-
-  try {
-    const bytes = Uint8Array.from(binary, (character) =>
-      character.charCodeAt(0)
-    );
-
-    return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
-  } catch {
-    return binary;
-  }
-}
-
-function parseInvitationData(encodedId) {
-  if (!encodedId) return null;
-
-  const decodedText = decodeBase64Utf8(decodeURIComponent(encodedId));
-  const possibleValues = [
-    decodedText.split("").reverse().join(""),
-    decodedText,
-  ];
-
-  for (const possibleValue of possibleValues) {
-    try {
-      const parsedData = JSON.parse(possibleValue);
-
-      if (parsedData && typeof parsedData === "object") {
-        return parsedData;
-      }
-    } catch {
-      // Intenta el siguiente formato.
-    }
-  }
-
-  throw new Error("El enlace de invitación no tiene un formato válido.");
-}
 
 function SeparadorFloral() {
   return (
@@ -123,24 +73,6 @@ function CheckIcon() {
       className="h-5 w-5"
     >
       <path d="m5 12 4 4L19 6" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="h-4 w-4"
-    >
-      <rect x="5" y="10" width="14" height="10" rx="2" />
-      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
     </svg>
   );
 }
@@ -214,83 +146,26 @@ function AttendanceOption({
 
 export default function Confirmacion() {
   const [nombreInvitado, setNombreInvitado] = useState("");
-  const [pasesAsignados, setPasesAsignados] = useState(1);
-  const [datosDesdeGenerador, setDatosDesdeGenerador] = useState(false);
   const [mensajeInvitado, setMensajeInvitado] = useState("");
   const [asistencia, setAsistencia] = useState("");
   const [invitados, setInvitados] = useState(1);
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
-  const [urlError, setUrlError] = useState("");
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const encodedId = params.get("id");
-    const visibleName = params.get("nombre");
-    const visiblePasses = params.get("pases");
+  const cambiarAsistencia = (respuesta) => {
+    setAsistencia(respuesta);
+    setError("");
 
-    try {
-      let invitationData = null;
-
-      if (encodedId) {
-        invitationData = parseInvitationData(encodedId);
-      } else if (visibleName || visiblePasses) {
-        invitationData = {
-          nombre: visibleName,
-          pases: visiblePasses,
-        };
-      }
-
-      if (!invitationData) return;
-
-      const decodedName =
-        typeof invitationData.nombre === "string"
-          ? invitationData.nombre.trim()
-          : "";
-
-      const decodedPasses = Number.parseInt(
-        invitationData.pases ??
-          invitationData.invitados ??
-          invitationData.cantidad ??
-          invitationData.lugares ??
-          1,
-        10
-      );
-
-      if (decodedName) {
-        setNombreInvitado(decodedName);
-        setDatosDesdeGenerador(true);
-      }
-
-      if (!Number.isNaN(decodedPasses) && decodedPasses > 0) {
-        setPasesAsignados(decodedPasses);
-        setInvitados(decodedPasses);
-      }
-    } catch (decodeError) {
-      console.error("No se pudieron leer los datos del enlace:", decodeError);
-      setUrlError(
-        "No pudimos reconocer los datos personalizados de esta invitación."
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    if (asistencia === "No asistiré") {
+    if (respuesta === "No asistiré") {
       setInvitados(0);
-    } else if (asistencia === "Sí asistiré" && invitados < 1) {
+      return;
+    }
+
+    if (respuesta === "Sí asistiré" && invitados < 1) {
       setInvitados(1);
     }
-  }, [asistencia, invitados]);
-
-  const availablePasses = useMemo(
-    () =>
-      Array.from(
-        { length: pasesAsignados },
-        (_, index) => index + 1
-      ),
-    [pasesAsignados]
-  );
+  };
 
   const enviarConfirmacion = async (event) => {
     event.preventDefault();
@@ -309,13 +184,9 @@ export default function Confirmacion() {
 
     if (
       asistencia === "Sí asistiré" &&
-      (invitados < 1 || invitados > pasesAsignados)
+      invitados < 1
     ) {
-      setError(
-        `Puedes confirmar entre 1 y ${pasesAsignados} ${
-          pasesAsignados === 1 ? "invitado" : "invitados"
-        }.`
-      );
+      setError("Escribe cuántas personas asistirán.");
       return;
     }
 
@@ -480,7 +351,7 @@ export default function Confirmacion() {
 
           <div className="relative z-10">
             <div>
-              <div className="flex items-center justify-between gap-4">
+              <div>
                 <label
                   htmlFor="confirmation-name"
                   className="text-[9px] font-bold uppercase tracking-[0.28em]"
@@ -488,31 +359,13 @@ export default function Confirmacion() {
                 >
                   Nombre
                 </label>
-
-                {datosDesdeGenerador && (
-                  <span
-                    className="
-                      inline-flex items-center gap-2 text-[8px]
-                      font-semibold uppercase tracking-[0.18em]
-                    "
-                    style={{ color: colores.textoSuave }}
-                  >
-                    <LockIcon />
-                    Invitación personalizada
-                  </span>
-                )}
               </div>
 
               <input
                 id="confirmation-name"
                 type="text"
                 value={nombreInvitado}
-                onChange={(event) => {
-                  if (!datosDesdeGenerador) {
-                    setNombreInvitado(event.target.value);
-                  }
-                }}
-                readOnly={datosDesdeGenerador}
+                onChange={(event) => setNombreInvitado(event.target.value)}
                 placeholder="Escribe tu nombre"
                 autoComplete="name"
                 className="
@@ -526,14 +379,6 @@ export default function Confirmacion() {
                 }}
               />
 
-              {urlError && (
-                <p
-                  className="mt-3 text-[12px] leading-5"
-                  style={{ color: colores.error }}
-                >
-                  {urlError}
-                </p>
-              )}
             </div>
 
             <div className="mt-8 border-t border-[#FFDCE8] pt-8">
@@ -548,7 +393,7 @@ export default function Confirmacion() {
                 <AttendanceOption
                   value="Sí asistiré"
                   selectedValue={asistencia}
-                  onChange={setAsistencia}
+                  onChange={cambiarAsistencia}
                   title="Sí asistiré"
                   description="¡Será un gusto celebrar juntos!"
                 />
@@ -556,7 +401,7 @@ export default function Confirmacion() {
                 <AttendanceOption
                   value="No asistiré"
                   selectedValue={asistencia}
-                  onChange={setAsistencia}
+                  onChange={cambiarAsistencia}
                   title="No asistiré"
                   description="Gracias por hacérnoslo saber."
                 />
@@ -571,7 +416,7 @@ export default function Confirmacion() {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                 >
-                  <div className="flex items-center justify-between gap-4">
+                  <div>
                     <label
                       htmlFor="confirmation-guests"
                       className="text-[9px] font-bold uppercase tracking-[0.28em]"
@@ -579,23 +424,21 @@ export default function Confirmacion() {
                     >
                       Número de invitados
                     </label>
-
-                    <span
-                      className="text-[9px] font-semibold uppercase tracking-[0.16em]"
-                      style={{ color: colores.textoSuave }}
-                    >
-                      Máximo {pasesAsignados}
-                    </span>
                   </div>
 
-                  <select
+                  <input
                     id="confirmation-guests"
+                    type="number"
+                    min="1"
+                    inputMode="numeric"
                     value={invitados}
-                    onChange={(event) =>
-                      setInvitados(Number(event.target.value))
-                    }
+                    onChange={(event) => {
+                      const value = Number.parseInt(event.target.value, 10);
+                      setInvitados(Number.isNaN(value) ? "" : value);
+                    }}
+                    placeholder="Escribe el número de invitados"
                     className="
-                      mt-3 w-full appearance-none rounded-[18px]
+                      mt-3 w-full rounded-[18px]
                       border-2 bg-[#FFF9FC] px-5 py-4
                       text-center font-serif text-base outline-none
                       sm:text-lg
@@ -604,14 +447,7 @@ export default function Confirmacion() {
                       color: colores.texto,
                       borderColor: colores.rosaClaro,
                     }}
-                  >
-                    {availablePasses.map((passNumber) => (
-                      <option key={passNumber} value={passNumber}>
-                        {passNumber}{" "}
-                        {passNumber === 1 ? "invitado" : "invitados"}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </motion.div>
               )}
             </AnimatePresence>

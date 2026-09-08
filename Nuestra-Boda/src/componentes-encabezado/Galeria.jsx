@@ -515,7 +515,7 @@ export default function Galeria() {
           className="
             mx-auto mt-10 max-w-xl text-center
             font-cursiveDancing text-3xl
-            leading-relaxed sm:mt-14 sm:text-4xl px-4
+            leading-relaxed sm:mt-14 sm:text-3xl px-5
           "
           style={{ color: colores.rosaFuerte }}
           initial={{ opacity: 0, y: 12 }}

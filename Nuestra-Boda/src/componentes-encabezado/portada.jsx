@@ -463,40 +463,6 @@ export default function Portada() {
                   Toca el sobre para comenzar
                 </motion.p>
 
-                <motion.div
-                  className="
-                    mt-2 w-full max-w-[300px] rounded-[24px]
-                    border-2 border-dashed bg-white/75 px-4 py-2.5
-                    text-center sm:mt-8 sm:max-w-[390px] sm:px-7 sm:py-5
-                  "
-                  style={{ borderColor: colores.rosaClaro }}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ ...transicion, delay: 0.45 }}
-                >
-                  <p
-                    className="text-[8px] font-bold uppercase tracking-[0.3em]"
-                    style={{ color: colores.naranja }}
-                  >
-                    Invitación preparada para
-                  </p>
-
-                  <p
-                    className="
-                      mt-2 break-words font-cursiveDancing
-                      text-2xl sm:mt-3 sm:text-3xl
-                    "
-                    style={{ color: colores.rosaFuerte }}
-                  >
-                    {invitados}
-                  </p>
-
-                  <div className="my-2 text-lg sm:my-3">🌼</div>
-
-                  <p className="font-serif text-xs font-semibold sm:text-base">
-                    {pases} {pases === 1 ? "pase reservado" : "pases reservados"}
-                  </p>
-                </motion.div>
               </motion.div>
             </div>
           </motion.section>

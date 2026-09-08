@@ -144,93 +144,7 @@ function ClockIcon() {
   );
 }
 
-function MargaritaConTallo({ className = "" }) {
-  return (
-    <motion.svg
-      viewBox="0 0 190 290"
-      fill="none"
-      aria-hidden="true"
-      className={`pointer-events-none absolute ${className}`}
-      initial={{ opacity: 0, x: -24, rotate: -7 }}
-      whileInView={{ opacity: 1, x: 0, rotate: -3 }}
-      viewport={{ once: true }}
-      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {/* TALLO */}
-      <path
-        d="M90 275C88 226 94 178 98 126"
-        stroke="#719653"
-        strokeWidth="8"
-        strokeLinecap="round"
-      />
 
-      {/* HOJAS */}
-      <path
-        d="M91 226C61 209 45 188 43 162C70 168 88 188 91 226Z"
-        fill="#8EAA68"
-      />
-
-      <path
-        d="M94 199C119 183 136 161 140 137C116 143 99 163 94 199Z"
-        fill="#769B58"
-      />
-
-      <path
-        d="M89 250C70 242 57 229 51 212C71 214 84 228 89 250Z"
-        fill="#A1B97C"
-      />
-
-      {/* PÉTALOS BLANCOS */}
-      <ellipse
-        cx="98"
-        cy="66"
-        rx="24"
-        ry="51"
-        fill="#FFFFFF"
-        transform="rotate(0 98 66)"
-      />
-      <ellipse
-        cx="98"
-        cy="66"
-        rx="24"
-        ry="51"
-        fill="#FFFDF9"
-        transform="rotate(45 98 66)"
-      />
-      <ellipse
-        cx="98"
-        cy="66"
-        rx="24"
-        ry="51"
-        fill="#FFFFFF"
-        transform="rotate(90 98 66)"
-      />
-      <ellipse
-        cx="98"
-        cy="66"
-        rx="24"
-        ry="51"
-        fill="#FFFDF9"
-        transform="rotate(135 98 66)"
-      />
-
-      {/* SOMBRA SUAVE DE LOS PÉTALOS */}
-      <circle
-        cx="98"
-        cy="66"
-        r="32"
-        fill="#F8E6C0"
-        opacity="0.32"
-      />
-
-      {/* CENTRO AMARILLO */}
-      <circle cx="98" cy="66" r="29" fill="#F5C44D" />
-      <circle cx="90" cy="57" r="8" fill="#FFE58A" opacity="0.9" />
-      <circle cx="107" cy="72" r="5" fill="#E7A92D" opacity="0.65" />
-      <circle cx="84" cy="73" r="4" fill="#E7A92D" opacity="0.55" />
-    </motion.svg>
-  );
-}
 
 function DatoPendiente({ titulo }) {
   return (
@@ -504,25 +418,6 @@ export default function EventoDireccion() {
       >
         🌼
       </span>
-
-      {/* MARGARITA GRANDE DE LA ESQUINA IZQUIERDA */}
-
-      <MargaritaConTallo
-        className="
-          -bottom-12
-          -left-12
-          z-[5]
-          h-[235px]
-          w-[155px]
-          sm:-bottom-14
-          sm:-left-8
-          sm:h-[310px]
-          sm:w-[205px]
-          lg:left-0
-          lg:h-[350px]
-          lg:w-[230px]
-        "
-      />
 
       {/* CONTENIDO */}
 
